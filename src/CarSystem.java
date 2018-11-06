@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-//compare cars
+
 public class CarSystem extends JFrame {
     private JButton buttonFile;
     private JPanel panelMain;
@@ -17,23 +17,10 @@ public class CarSystem extends JFrame {
     private GroupLayout layoutAddSaleCar;
     private GroupLayout layoutBooking; //https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
 
-
-
     /*
-    Creates the form
+    Creates GUI
      */
-    public CarSystem() {
-        FormParts();
-    }
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> new CarSystem().setVisible(true));
-    }
-
-    /*
-    Creates the components for the form
-     */
-    private void FormParts() {
+    public   CarSystem() {
 
         //Code is from https://stackoverflow.com/questions/7065309/jsplitpane-set-resizable-false
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT) {
@@ -204,6 +191,7 @@ public class CarSystem extends JFrame {
         setFont(new Font("Calibri", Font.PLAIN, 24));
         setTitle("Car System");
         setResizable(false);
+        setVisible(true);
         pack();
 
     }
