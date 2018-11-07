@@ -13,7 +13,7 @@ public class CarSystem extends JFrame {
      */
     public   CarSystem() {
 
-        //Code is from https://stackoverflow.com/questions/7065309/jsplitpane-set-resizable-false
+         //Code is from https://stackoverflow.com/questions/7065309/jsplitpane-set-resizable-false
         JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT) {
             private final int location = 150;
 
