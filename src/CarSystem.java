@@ -3,20 +3,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 
 public class CarSystem extends JFrame {
-    private JButton buttonFile;
     private JPanel panelMain;
     private JPanel panelHome;
-    private JPanel panelFile;
     private JPanel panelAddSaleCar;
     private JPanel panelCustomer;
-    private JPanel panelBooking;
-    private JLabel jLabelFile;
-    private JLabel jLabelEmp;
-    private JLabel jLabelBook;
-    private GroupLayout layoutfile;
-    private GroupLayout layoutAddSaleCar;
-    private GroupLayout layoutBooking; //https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
-
+    private JPanel panelViewCars;
     /*
     Creates GUI
      */
@@ -62,24 +53,15 @@ public class CarSystem extends JFrame {
         buttonCustomer.addActionListener(this::customerButtonActionPerformed);
         sidebar.add(buttonCustomer);
 
+        JButton buttonViewCars = new JButton();
+        buttonViewCars.setText("View Cars");
+        buttonViewCars.addActionListener(this::ViewCarsButtonActionPerformed);
+        sidebar.add(buttonViewCars);
+
         JButton buttonAddSaleCar = new JButton();
         buttonAddSaleCar.setText("Add Car");
         buttonAddSaleCar.addActionListener(this::addSaleCarButtonActionPerformed);
         sidebar.add(buttonAddSaleCar);
-
-
-/*
-        bookingButton = new JButton();
-        bookingButton.setText("Add Employee");
-        bookingButton.addActionListener(this::bookingButtonActionPerformed);
-        sidebar.add(bookingButton);
-
-         fileButton = new JButton();
-        fileButton.setText("File");
-        fileButton.addActionListener(this::fileButtonActionPerformed);
-        sidebar.add(fileButton);
-
-*/
 
         //left menu
         split.setLeftComponent(sidebar);
@@ -89,7 +71,10 @@ public class CarSystem extends JFrame {
 
         //Creates the panel for the corresponding button click
 
-        /* Home */
+        /*
+        Home
+        */
+
         panelHome = new JPanel();
         JLabel jLabelHome = new JLabel();
         jLabelHome.setText("Home");
@@ -112,17 +97,21 @@ public class CarSystem extends JFrame {
                                 .addContainerGap(350, Short.MAX_VALUE))
         );
         panelMain.add(panelHome);
+        //end home
 
-
+        /*
+        Customer
+        */
+//remove this later
         JTextField textFile = new JTextField(6);
-        /* Customer */
+
         panelCustomer = new JPanel();
         JPanel filetesting = new JPanel(new GridLayout(4, 1));
         filetesting.add(new JLabel("TextField" ));
         filetesting.add(textFile);
+//need to remove end
 
-
-        GroupLayout layoutEmployee = new GroupLayout(panelCustomer);
+        GroupLayout layoutEmployee = new GroupLayout(panelCustomer); //https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
         panelCustomer.setLayout(layoutEmployee);
         layoutEmployee.setHorizontalGroup(
                 layoutEmployee.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -140,14 +129,45 @@ public class CarSystem extends JFrame {
                                 .addContainerGap(350, Short.MAX_VALUE))
         );
         panelMain.add(panelCustomer);
+        //end customer
 
+        /*
+        View Cars
+        */
 
+        panelViewCars = new JPanel();
+        JLabel jLabelViewCars = new JLabel();
 
+        jLabelViewCars.setText("View Cars");
+
+        GroupLayout layoutViewCars = new GroupLayout(panelViewCars);
+        panelViewCars.setLayout(layoutViewCars);
+        layoutViewCars.setHorizontalGroup(
+                layoutViewCars.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layoutViewCars.createSequentialGroup()
+                                .addGap(500, 500, 500)
+                                .addComponent(jLabelViewCars)
+                                .addContainerGap(400, Short.MAX_VALUE))
+        );
+
+        layoutViewCars.setVerticalGroup(
+                layoutViewCars.createParallelGroup(GroupLayout.Alignment.LEADING)
+                        .addGroup(layoutViewCars.createSequentialGroup()
+                                .addGap(300, 300, 300)
+                                .addComponent(jLabelViewCars)
+                                .addContainerGap(350, Short.MAX_VALUE))
+        );
+        panelMain.add(panelViewCars);
+        //end view cars
+
+        /*
+        AddSaleCar
+        */
 
         panelAddSaleCar = new JPanel();
         JLabel jLabelAddSaleCar = new JLabel();
 
-        jLabelAddSaleCar.setText("Add car");
+        jLabelAddSaleCar.setText("Sell Car");
 
         GroupLayout layoutAddSaleCar = new GroupLayout(panelAddSaleCar);
         panelAddSaleCar.setLayout(layoutAddSaleCar);
@@ -167,13 +187,10 @@ public class CarSystem extends JFrame {
                                 .addContainerGap(350, Short.MAX_VALUE))
         );
         panelMain.add(panelAddSaleCar);
-/*
-        panelEmployee = new JPanel();
-        jLabelEmp = new JLabel();
+        //end AddSaleCar
 
-        panelBooking = new JPanel();
-        jLabelBook = new JLabel();
-*/
+
+
         //right panel
         split.setRightComponent(panelMain);
 
@@ -217,12 +234,13 @@ public class CarSystem extends JFrame {
         panelMain.repaint();
         panelMain.revalidate();
     }
-/*
-    private void (ActionEvent actionEvent) {
+
+    private void ViewCarsButtonActionPerformed(ActionEvent actionEvent) {
+        panelMain.removeAll();
+        panelMain.add(panelViewCars);
+        panelMain.repaint();
+        panelMain.revalidate();
     }
 
-    private void bookingButtonActionPerformed(ActionEvent actionEvent) {
-    }
 
-*/
 }//end
