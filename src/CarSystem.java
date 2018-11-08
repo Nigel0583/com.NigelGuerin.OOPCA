@@ -48,10 +48,6 @@ public class CarSystem extends JFrame {
         buttonHome.addActionListener(this::homeButtonActionPerformed);//Method Reference
         sidebar.add(buttonHome);
 
-        JButton buttonCustomer = new JButton();
-        buttonCustomer.setText("Login");
-        buttonCustomer.addActionListener(this::customerButtonActionPerformed);
-        sidebar.add(buttonCustomer);
 
         JButton buttonViewCars = new JButton();
         buttonViewCars.setText("View Cars");
@@ -110,7 +106,7 @@ public class CarSystem extends JFrame {
         filetesting.add(new JLabel("TextField" ));
         filetesting.add(textFile);
 //need to remove end
-
+/*
         GroupLayout layoutEmployee = new GroupLayout(panelCustomer); //https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
         panelCustomer.setLayout(layoutEmployee);
         layoutEmployee.setHorizontalGroup(
@@ -130,7 +126,7 @@ public class CarSystem extends JFrame {
         );
         panelMain.add(panelCustomer);
         //end customer
-
+*/
         /*
         View Cars
         */
@@ -213,21 +209,21 @@ public class CarSystem extends JFrame {
 
     }
 
+
     private void homeButtonActionPerformed(ActionEvent actionEvent) {
         panelMain.removeAll();
         panelMain.add(panelHome);
         panelMain.repaint();
         panelMain.revalidate();
     }
-
+/*
     private void customerButtonActionPerformed(ActionEvent actionEvent) {
         panelMain.removeAll();
         panelMain.add(panelCustomer);
         panelMain.repaint();
         panelMain.revalidate();
     }
-
-
+*/
     private void addSaleCarButtonActionPerformed(ActionEvent actionEvent) {
         panelMain.removeAll();
         panelMain.add(panelAddSaleCar);
@@ -241,6 +237,5 @@ public class CarSystem extends JFrame {
         panelMain.repaint();
         panelMain.revalidate();
     }
-
 
 }//end

@@ -3,10 +3,14 @@ public class Customer {
     private String surname;
     private String DOB;
     private String email;
-    private String address;
-    private String postcode;
-    private int phone;
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
     public String getFirstname() {
         return firstname;
@@ -32,37 +36,21 @@ public class Customer {
         this.DOB = DOB;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
+    public Customer(String firstname, String surname, String DOB, String email) {
+        this.firstname = firstname;
+        this.surname = surname;
+        this.DOB = DOB;
         this.email = email;
     }
 
-
-    public String getAddress() {
-        return address;
+    @Override
+    public String toString() {
+        return "Name: " + firstname + surname+ '\n'+
+                "Email: " +email;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPostcode() {
-        return postcode;
-    }
-
-    public void setPostcode(String postcode) {
-        this.postcode = postcode;
-    }
-
-    public int getPhone() {
-        return phone;
-    }
-
-    public void setPhone(int phone) {
-        this.phone = phone;
+    public Customer(){
+        this("Unknown","Unknown","Unknown","Unknown");
     }
 }
 
