@@ -2,29 +2,21 @@ public class Car {
     private String model;
     private String make;
     private String type;
-    private double engineSize;
-    private int year;
     private String Regno;
-    private int emissions;
-    private String transmission;
-    private String fuel;
+    private int year;
+
 
     public Car(){
-        this("Unknown","Unknown","Unknown",0.0,0,
-                "Unknown",0,"Unknown","Unknown");
+        this("Unknown","Unknown","Unknown","Unknown",0);
     }
 
-    public Car(String model, String make, String type, double engineSize, int year,
-               String regno, int emissions, String transmission, String fuel) {
+    public Car(String model, String make, String type,String regno,int year) {
         this.model = model;
         this.make = make;
         this.type = type;
-        this.engineSize = engineSize;
         this.year = year;
         Regno = regno;
-        this.emissions = emissions;
-        this.transmission = transmission;
-        this.fuel = fuel;
+
     }
 
     @Override
@@ -32,36 +24,8 @@ public class Car {
         return "Make: " + make + '\n' +
                 "Model: " + model + '\n' +
                 "Type: " + type + '\n' +
-                "Engine Size: " + engineSize +
                 "Year: " + year + '\n' +
-                "Registration: " + Regno + '\n' +
-                "Emissions: " + emissions +
-                "Transmission: " + transmission + '\n' +
-                "Fuel: " + fuel;
-    }
-
-    public int getEmissions() {
-        return emissions;
-    }
-
-    public void setEmissions(int emissions) {
-        this.emissions = emissions;
-    }
-
-    public String getTransmission() {
-        return transmission;
-    }
-
-    public void setTransmission(String transmission) {
-        this.transmission = transmission;
-    }
-
-    public String getFuel() {
-        return fuel;
-    }
-
-    public void setFuel(String fuel) {
-        this.fuel = fuel;
+                "Registration: " + Regno ;
     }
 
     public String getModel() {
@@ -88,13 +52,6 @@ public class Car {
         this.type = type;
     }
 
-    public double getEngineSize() {
-        return engineSize;
-    }
-
-    public void setEngineSize(double engineSize) {
-        this.engineSize = engineSize;
-    }
 
     public int getYear() {
         return year;
