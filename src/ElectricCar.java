@@ -1,20 +1,19 @@
 public class ElectricCar extends Car {
     private String batterySize;
     private String Motor;
-    private int NoOfMotors;
+
 
     @Override
     public String toString() {
         return "ElectricCar" +
                 "BatterySize: " + batterySize + '\n' +
-                "Motor: " + Motor + '\n' +
-                "Number of motors: " + NoOfMotors ;
+                "Motor: " + Motor ;
     }
 
-    public ElectricCar(String batterySize, String motor, int noOfMotors) {
+    public ElectricCar(String batterySize, String motor) {
         this.batterySize = batterySize;
         Motor = motor;
-        NoOfMotors = noOfMotors;
+
     }
 
     public String getBatterySize() {
@@ -33,11 +32,5 @@ public class ElectricCar extends Car {
         Motor = motor;
     }
 
-    public int getNoOfMotors() {
-        return NoOfMotors;
-    }
 
-    public void setNoOfMotors(int noOfMotors) {
-        NoOfMotors = noOfMotors;
-    }
 }
