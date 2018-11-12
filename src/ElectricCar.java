@@ -1,5 +1,5 @@
 public class ElectricCar extends Car {
-    private String batterySize;
+    private int batterySize;
     private String Motor;
 
 
@@ -10,17 +10,17 @@ public class ElectricCar extends Car {
                 "Motor: " + Motor ;
     }
 
-    public ElectricCar(String batterySize, String motor) {
+    public ElectricCar(int batterySize, String motor) {
         this.batterySize = batterySize;
         Motor = motor;
 
     }
 
-    public String getBatterySize() {
+    public int getBatterySize() {
         return batterySize;
     }
 
-    public void setBatterySize(String batterySize) {
+    public void setBatterySize(int batterySize) {
         this.batterySize = batterySize;
     }
 

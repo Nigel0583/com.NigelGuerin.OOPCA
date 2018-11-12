@@ -356,30 +356,88 @@ public class CarSystem extends JFrame implements ActionListener {
 
     public void addCarSale() {
         String[] fuelTypeList = {"Fossil Fuel", "Electric"};
+        String[] CarBodyTypes = {"Cabriolet","Commercial","Coupe","Estate","Hatchback","Saloon","SUV"};
+        String make;
 
-        String make = JOptionPane.showInputDialog("Enter the make of the car");
-        String model = JOptionPane.showInputDialog("Enter the model of the car");
-        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
-
-        String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
-                "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
         boolean valid = false;
         while (!valid) {
+            try {
+                make = JOptionPane.showInputDialog("Enter the make of the car");
+                if (make.length() > 0 && make.length() < 60) {
+                    String model = JOptionPane.showInputDialog("Enter the model of the car");
+                    if (model.length() > 0 && model.length() < 60) {
+                        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
+                        String r = regno.toUpperCase();
+                        //Regex validation from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
+                         /*
+                        A regular expression defines a search pattern for strings
+                        The ^ Finds regex that must match at the beginning of the line.
+                        The \d  Any digit, short for [0-9].
+                        The ? Occurs no or one times, ? is short for {0,1}.
+                        The {2,3} Must occur between 2 to 3.
+                        */
+                        if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
+                            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
+                            if (year == (int) year) {
+                                String type = (String) JOptionPane.showInputDialog(null, "Body type",
+                                        "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
 
-            if (fuelType.equals("Fossil Fuel")) {
-                String emissions = JOptionPane.showInputDialog("Enter the emissions of the car");
-                String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
-                String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
-                String engineSize = JOptionPane.showInputDialog("Enter the engine size of the car");
+                                String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                                        "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
 
-            } else if (fuelType.equals("Electric")) {
-                String batterySize = JOptionPane.showInputDialog("Enter the battery capacity of the car");
-                String Motor = JOptionPane.showInputDialog("Enter the motor type of the car");
+                                if (fuelType.equals("Fossil Fuel")) {
+                                    int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
+                                    String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
+                                    String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
+                                    double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
+                                    this.car = new FuelCar(emissions,transmission,fuel,engineSize);
+                                    this.car = new Car(make, model, type, regno, year);
+                                    JOptionPane.showMessageDialog(null, car );
+
+                                    valid = true;
+
+                                } else if (fuelType.equals("Electric")) {
+                                    int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
+                                    String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
+                                    this.car = new ElectricCar(batterySize,motor);
+                                    this.car = new Car(make, model, type, regno, year);
+                                    JOptionPane.showMessageDialog(null, car );
+
+                                    valid = true;
+                                }
+                            } else {
+                                year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
+                            }
 
 
+                        } else if (r.equals("")) {
+                            regno = JOptionPane.showInputDialog("Registration must have a value. 11(1)-XX-1(1111) Please re-enter");
+                            r = regno.toUpperCase();
+
+                        } else {
+                            regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
+                            r = regno.toUpperCase();
+                        }
+                    } else if (model.equals("")) {
+                        model = JOptionPane.showInputDialog("Model must have a value. Please re-enter");
+                    } else {
+                        model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
+                    }
+                } else if (make.equals("")) {
+                    make = JOptionPane.showInputDialog("Make must have a value. Please re-enter");
+                } else {
+                    make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
+                }
+            } catch (NullPointerException n) {
+                int choice = JOptionPane.showConfirmDialog(null, "Field must not be empty. Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                if (choice == 0) {
+                    make = JOptionPane.showInputDialog("Enter the make of the car");
+                } else {
+                    break;
+                }
             }
         }
-    }
+    }//end addCarSale
 
     @Override
     public void actionPerformed(ActionEvent e) {
