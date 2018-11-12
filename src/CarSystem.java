@@ -1,31 +1,54 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-
-public class CarSystem extends JFrame  {
-    private JPanel panelMain;
-    private JPanel pnPanelSearchHome;
-    private JPanel panelAddSaleCar;
-    private JPanel panelCustomer;
-    private JPanel panelViewCars;
+public class CarSystem extends JFrame implements ActionListener {
+    private JPanel pnMain;
+    private JPanel pnSidebar;
+    private JButton btHome;
+    private JButton btViewCars;
+    private JButton btSellCar;
+    private JButton btLogin;
+    private JPanel pnRightpanel;
+    private JPanel pnSearchCars;
+    private JLabel lbMake;
+    private JTextField tfMake;
+    private JTextField tfModel;
     private JComboBox cmbMinYear;
     private JComboBox cmbMaxYear;
-    private JTextField tfModel;
     private JTextField tfMinPrice;
     private JTextField tfMaxPrice;
-    private JComboBox cmbBodyType;
-    private JButton btSearchCar;
-    private JTextField tfMake;
+    private JButton btSearch;
+    private JLabel lbModel;
+    private JLabel lbMinYear;
+    private JLabel lbMaxYear;
+    private JLabel lbMinPrice;
+    private JLabel lbMaxPrice;
+    private JPanel pnAd;
+    private JLabel lbSellcar;
+    private JButton btSellcar;
+    private Car car;
+    ArrayList<Car> cars = new ArrayList<>();
+    //------------------------------------------------------------------------------
 
-    /*
-    Creates GUI
-     */
-    public   CarSystem() {
+    public CarSystem() {
+        super("CarSystem");
+        setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
 
-         //Code is from https://stackoverflow.com/questions/7065309/jsplitpane-set-resizable-false
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT) {
-            private final int location = 150;
+        pnMain = new JPanel();
+        pnMain.setAlignmentX(1);
+        pnMain.setAlignmentY(1);
+        GridBagLayout gbMain = new GridBagLayout();
+        GridBagConstraints gbcMain = new GridBagConstraints();
+        pnMain.setLayout(gbMain);
+
+        //Code is from https://stackoverflow.com/questions/7065309/jsplitpane-set-resizable-false
+        //Divides menu panel and input panel
+        JSplitPane sppSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT) {
+            //Keeps split pane locked to one location
+            private final int location = 100;
 
             {
                 setDividerLocation(location);
@@ -40,418 +63,329 @@ public class CarSystem extends JFrame  {
             public int getLastDividerLocation() {
                 return location;
             }
-        };
+        };//end
+        sppSplit.setForeground(new Color(0, 0, 0));
 
 
-        //Creates menu and buttons for the menu
-        JPanel sidebar = new JPanel();
-        panelMain = new JPanel();
-
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        sidebar.setBackground(new Color(255, 255, 255));
-        sidebar.setLayout(new GridLayout(20, 1));
-
-
-        JButton buttonHome = new JButton();
-        buttonHome.setText("Home");
-        buttonHome.addActionListener(this::homeButtonActionPerformed);//Method Reference
-        sidebar.add(buttonHome);
-
-
-        JButton buttonViewCars = new JButton();
-        buttonViewCars.setText("View Cars");
-        buttonViewCars.addActionListener(this::ViewCarsButtonActionPerformed);
-        sidebar.add(buttonViewCars);
-
-        JButton buttonAddSaleCar = new JButton();
-        buttonAddSaleCar.setText("Add Car");
-        buttonAddSaleCar.addActionListener(this::addSaleCarButtonActionPerformed);
-        sidebar.add(buttonAddSaleCar);
-
-        //left menu
-        split.setLeftComponent(sidebar);
-
-        panelMain.setLayout(new GridBagLayout());// https://docs.oracle.com/javase/tutorial/uiswing/layout/card.html
-
-
-        //Creates the panel for the corresponding button click
-        /*
-        Home
-        */
-
+        pnSidebar = new JPanel();
         //https://docs.oracle.com/javase/tutorial/uiswing/layout/gridbag.html
+        //Layout manager that allows you to position components relative to one another using constraints
+        GridBagLayout gbSidebar = new GridBagLayout();
+        GridBagConstraints gbcSidebar = new GridBagConstraints();
+        pnSidebar.setLayout(gbSidebar);
 
-        JComboBox cmbMinYear;
-        JComboBox cmbMaxYear;
-        JTextField tfModel;
-        JTextField tfMinPrice;
-        JTextField tfMaxPrice;
-        JComboBox cmbBodyType;
-        JButton btSearchCar;
-        JTextField tfMake;
-        JLabel lbModel;
-        JLabel lbMaxYear;
-        JLabel lbMaxPrice;
-        JLabel lbMake;
-        JLabel lbMinYear;
-        JLabel lbMinPrice;
-        JLabel lbBodyType;
+        btHome = new JButton("Home");
+        gbcSidebar.gridwidth = 1;
+        gbcSidebar.gridheight = 1;
+        gbcSidebar.fill = GridBagConstraints.BOTH;
+        gbcSidebar.anchor = GridBagConstraints.NORTH;
+        gbSidebar.setConstraints(btHome, gbcSidebar);
+        pnSidebar.add(btHome);
 
-        pnPanelSearchHome = new JPanel();
-        pnPanelSearchHome.setBorder( BorderFactory.createTitledBorder( "Search For Cars" ) );
-        GridBagLayout gbPanelSearchHome = new GridBagLayout();
-        GridBagConstraints gbcPanelSearchHome = new GridBagConstraints();
-        pnPanelSearchHome.setLayout( gbPanelSearchHome );
+        btViewCars = new JButton("View Cars");
+        gbcSidebar.gridy = 1;
+        gbcSidebar.gridwidth = 1;
+        gbcSidebar.gridheight = 1;
+        gbcSidebar.fill = GridBagConstraints.BOTH;
+        gbcSidebar.weightx = 1;
+        gbcSidebar.anchor = GridBagConstraints.NORTH;
+        gbSidebar.setConstraints(btViewCars, gbcSidebar);
+        pnSidebar.add(btViewCars);
 
-        String []dataMinYear = { "182", "181", "172", "171", "162", "161", "152", "151",
-                "142", "141", "132", "131", "2012", "2011", "2010",
-                "2009", "2008", "2007", "2006", "2005", "2004", "2003",
-                "2002", "2001", "2000" };
-        cmbMinYear = new JComboBox( dataMinYear );
-        gbcPanelSearchHome.gridx = 1;
-        gbcPanelSearchHome.gridy = 1;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( cmbMinYear, gbcPanelSearchHome );
-        pnPanelSearchHome.add( cmbMinYear );
+        this.btSellCar = new JButton("Sell Car");
+        this.btSellCar.addActionListener(this);
+        gbcSidebar.gridy = 3;
+        gbcSidebar.gridwidth = 1;
+        gbcSidebar.gridheight = 1;
+        gbcSidebar.fill = GridBagConstraints.BOTH;
+        gbcSidebar.weightx = 1;
+        gbcSidebar.anchor = GridBagConstraints.NORTH;
+        gbSidebar.setConstraints(btSellCar, gbcSidebar);
+        pnSidebar.add(this.btSellCar);
 
-        String []dataMaxYear = { "2000", "2001", "2002", "2003", "2004", "2005", "2006",
+        btLogin = new JButton("Login");
+        this.btLogin.setToolTipText("Login to sell a car");
+        gbcSidebar.gridy = 2;
+        gbcSidebar.gridwidth = 1;
+        gbcSidebar.gridheight = 1;
+        gbcSidebar.fill = GridBagConstraints.BOTH;
+        gbcSidebar.weightx = 1;
+        gbcSidebar.anchor = GridBagConstraints.NORTH;
+        gbSidebar.setConstraints(btLogin, gbcSidebar);
+        pnSidebar.add(btLogin);
+        sppSplit.setLeftComponent(pnSidebar);
+
+        /*
+            Right panel
+        */
+        pnRightpanel = new JPanel();
+        GridBagLayout gbRightpanel = new GridBagLayout();
+        GridBagConstraints gbcRightpanel = new GridBagConstraints();
+        pnRightpanel.setLayout(gbRightpanel);
+
+        pnSearchCars = new JPanel();
+        pnSearchCars.setBorder(BorderFactory.createTitledBorder("Search For A Car"));
+        GridBagLayout gbSearchCars = new GridBagLayout();
+        GridBagConstraints gbcSearchCars = new GridBagConstraints();
+        pnSearchCars.setLayout(gbSearchCars);
+
+        lbMake = new JLabel("Make");
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbMake, gbcSearchCars);
+        pnSearchCars.add(lbMake);
+        tfMake = new JTextField();
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(tfMake, gbcSearchCars);
+        pnSearchCars.add(tfMake);
+
+        tfModel = new JTextField();
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 1;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(tfModel, gbcSearchCars);
+        pnSearchCars.add(tfModel);
+
+        String[] dataMinYear = {"2000", "2001", "2002", "2003", "2004", "2005", "2006",
                 "2007", "2008", "2009", "2010", "2011", "2012", "131",
                 "132", "141", "142", "151", "152", "161", "162", "171",
-                "172", "181", "182" };
-        cmbMaxYear = new JComboBox( dataMaxYear );
-        gbcPanelSearchHome.gridx = 3;
-        gbcPanelSearchHome.gridy = 1;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( cmbMaxYear, gbcPanelSearchHome );
-        pnPanelSearchHome.add( cmbMaxYear );
+                "172", "181", "182"};
+        cmbMinYear = new JComboBox(dataMinYear);
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 2;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(cmbMinYear, gbcSearchCars);
+        pnSearchCars.add(cmbMinYear);
 
-        tfModel = new JTextField( );
-        gbcPanelSearchHome.gridx = 3;
-        gbcPanelSearchHome.gridy = 0;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.CENTER;
-        gbPanelSearchHome.setConstraints( tfModel, gbcPanelSearchHome );
-        pnPanelSearchHome.add( tfModel );
+        String[] dataMaxYear = {"182", "181", "172", "171", "162", "161", "152", "151",
+                "142", "141", "132", "131", "2012", "2011", "2010",
+                "2009", "2008", "2007", "2006", "2005", "2004", "2003",
+                "2002", "2001", "2000"};
+        cmbMaxYear = new JComboBox(dataMaxYear);
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 3;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(cmbMaxYear, gbcSearchCars);
+        pnSearchCars.add(cmbMaxYear);
 
-        tfMinPrice = new JTextField( );
-        gbcPanelSearchHome.gridx = 1;
-        gbcPanelSearchHome.gridy = 2;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( tfMinPrice, gbcPanelSearchHome );
-        pnPanelSearchHome.add( tfMinPrice );
+        tfMinPrice = new JTextField();
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 4;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(tfMinPrice, gbcSearchCars);
+        pnSearchCars.add(tfMinPrice);
 
-        tfMaxPrice = new JTextField( );
-        gbcPanelSearchHome.gridx = 3;
-        gbcPanelSearchHome.gridy = 2;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( tfMaxPrice, gbcPanelSearchHome );
-        pnPanelSearchHome.add( tfMaxPrice );
+        tfMaxPrice = new JTextField();
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 5;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(tfMaxPrice, gbcSearchCars);
+        pnSearchCars.add(tfMaxPrice);
 
-        String []dataBodyType = { "Cabriolet", "Commercial", "Coupe", "Estate",
-                "Hatchback", "Saloon", "SUV", "Other" };
-        cmbBodyType = new JComboBox( dataBodyType );
-        gbcPanelSearchHome.gridx = 1;
-        gbcPanelSearchHome.gridy = 3;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( cmbBodyType, gbcPanelSearchHome );
-        pnPanelSearchHome.add( cmbBodyType );
+        btSearch = new JButton("Search");
+        gbcSearchCars.gridx = 1;
+        gbcSearchCars.gridy = 6;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(btSearch, gbcSearchCars);
+        pnSearchCars.add(btSearch);
 
-        btSearchCar = new JButton( "Search"  );
-        gbcPanelSearchHome.gridx = 2;
-        gbcPanelSearchHome.gridy = 3;
-        gbcPanelSearchHome.gridwidth = 2;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 0;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( btSearchCar, gbcPanelSearchHome );
-        pnPanelSearchHome.add( btSearchCar );
+        lbModel = new JLabel("Model");
+        gbcSearchCars.gridx = 0;
+        gbcSearchCars.gridy = 1;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbModel, gbcSearchCars);
+        pnSearchCars.add(lbModel);
 
-        tfMake = new JTextField( );
-        gbcPanelSearchHome.gridx = 1;
-        gbcPanelSearchHome.gridy = 0;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 0;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( tfMake, gbcPanelSearchHome );
-        pnPanelSearchHome.add( tfMake );
+        lbMinYear = new JLabel("Min Year");
+        gbcSearchCars.gridx = 0;
+        gbcSearchCars.gridy = 2;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbMinYear, gbcSearchCars);
+        pnSearchCars.add(lbMinYear);
 
-        lbModel = new JLabel( "Model"  );
-        gbcPanelSearchHome.gridx = 2;
-        gbcPanelSearchHome.gridy = 0;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.CENTER;
-        gbPanelSearchHome.setConstraints( lbModel, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbModel );
+        lbMaxYear = new JLabel("Max Year");
+        gbcSearchCars.gridx = 0;
+        gbcSearchCars.gridy = 3;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbMaxYear, gbcSearchCars);
+        pnSearchCars.add(lbMaxYear);
 
-        lbMaxYear = new JLabel( "Max Year"  );
-        gbcPanelSearchHome.gridx = 2;
-        gbcPanelSearchHome.gridy = 1;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( lbMaxYear, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbMaxYear );
+        lbMinPrice = new JLabel("Min Price");
+        gbcSearchCars.gridx = 0;
+        gbcSearchCars.gridy = 4;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbMinPrice, gbcSearchCars);
+        pnSearchCars.add(lbMinPrice);
 
-        lbMaxPrice = new JLabel( "Max Price"  );
-        gbcPanelSearchHome.gridx = 2;
-        gbcPanelSearchHome.gridy = 2;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( lbMaxPrice, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbMaxPrice );
+        lbMaxPrice = new JLabel("Max Price");
+        gbcSearchCars.gridx = 0;
+        gbcSearchCars.gridy = 5;
+        gbcSearchCars.gridwidth = 1;
+        gbcSearchCars.gridheight = 1;
+        gbcSearchCars.fill = GridBagConstraints.BOTH;
+        gbcSearchCars.weightx = 1;
+        gbcSearchCars.weighty = 1;
+        gbcSearchCars.anchor = GridBagConstraints.NORTH;
+        gbSearchCars.setConstraints(lbMaxPrice, gbcSearchCars);
+        pnSearchCars.add(lbMaxPrice);
+        gbcRightpanel.gridx = 0;
+        gbcRightpanel.gridy = 0;
+        gbcRightpanel.gridwidth = 8;
+        gbcRightpanel.gridheight = 4;
+        gbcRightpanel.fill = GridBagConstraints.BOTH;
+        gbcRightpanel.weightx = 1;
+        gbcRightpanel.weighty = 0;
+        gbcRightpanel.anchor = GridBagConstraints.NORTH;
+        gbRightpanel.setConstraints(pnSearchCars, gbcRightpanel);
+        pnRightpanel.add(pnSearchCars);
 
-        lbMake = new JLabel( "Make"  );
-        gbcPanelSearchHome.gridx = 0;
-        gbcPanelSearchHome.gridy = 0;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.CENTER;
-        gbPanelSearchHome.setConstraints( lbMake, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbMake );
+        pnAd = new JPanel();
+        pnAd.setBorder(BorderFactory.createTitledBorder("Place Ad"));
+        GridBagLayout gbAd = new GridBagLayout();
+        GridBagConstraints gbcAd = new GridBagConstraints();
+        pnAd.setLayout(gbAd);
 
-        lbMinYear = new JLabel( "Min Year"  );
-        gbcPanelSearchHome.gridx = 0;
-        gbcPanelSearchHome.gridy = 1;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.CENTER;
-        gbPanelSearchHome.setConstraints( lbMinYear, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbMinYear );
+        lbSellcar = new JLabel("Sell Your Car easily");
+        gbcAd.gridx = 0;
+        gbcAd.gridy = 0;
+        gbcAd.gridwidth = 1;
+        gbcAd.gridheight = 1;
+        gbcAd.fill = GridBagConstraints.VERTICAL;
+        gbcAd.weightx = 1;
+        gbcAd.weighty = 1;
+        gbcAd.anchor = GridBagConstraints.NORTH;
+        gbAd.setConstraints(lbSellcar, gbcAd);
+        pnAd.add(lbSellcar);
 
-        lbMinPrice = new JLabel( "Min Price"  );
-        gbcPanelSearchHome.gridx = 0;
-        gbcPanelSearchHome.gridy = 2;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( lbMinPrice, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbMinPrice );
+        btSellcar = new JButton("Sell Car");
+        gbcAd.gridx = 0;
+        gbcAd.gridy = 3;
+        gbcAd.gridwidth = 1;
+        gbcAd.gridheight = 1;
+        gbcAd.fill = GridBagConstraints.NONE;
+        gbcAd.weightx = 1;
+        gbcAd.weighty = 0;
+        gbcAd.anchor = GridBagConstraints.NORTH;
+        gbAd.setConstraints(btSellcar, gbcAd);
+        pnAd.add(btSellcar);
+        gbcRightpanel.gridx = 8;
+        gbcRightpanel.gridy = 0;
+        gbcRightpanel.gridwidth = 3;
+        gbcRightpanel.gridheight = 4;
+        gbcRightpanel.fill = GridBagConstraints.BOTH;
+        gbcRightpanel.weightx = 1;
+        gbcRightpanel.weighty = 0;
+        gbcRightpanel.anchor = GridBagConstraints.NORTH;
+        gbRightpanel.setConstraints(pnAd, gbcRightpanel);
+        pnRightpanel.add(pnAd);
+        sppSplit.setRightComponent(pnRightpanel);
+        gbcMain.gridx = 0;
+        gbcMain.gridy = 0;
+        gbcMain.gridwidth = 1;
+        gbcMain.gridheight = 1;
+        gbcMain.fill = GridBagConstraints.BOTH;
+        gbcMain.weightx = 1;
+        gbcMain.weighty = 1;
+        gbcMain.anchor = GridBagConstraints.NORTH;
+        gbMain.setConstraints(sppSplit, gbcMain);
+        pnMain.add(sppSplit);
 
-        lbBodyType = new JLabel( "Body Type"  );
-        gbcPanelSearchHome.gridx = 0;
-        gbcPanelSearchHome.gridy = 3;
-        gbcPanelSearchHome.gridwidth = 1;
-        gbcPanelSearchHome.gridheight = 1;
-        gbcPanelSearchHome.fill = GridBagConstraints.BOTH;
-        gbcPanelSearchHome.weightx = 1;
-        gbcPanelSearchHome.weighty = 1;
-        gbcPanelSearchHome.anchor = GridBagConstraints.NORTH;
-        gbPanelSearchHome.setConstraints( lbBodyType, gbcPanelSearchHome );
-        pnPanelSearchHome.add( lbBodyType );
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-
-       /*//https://docs.oracle.com/javase/tutorial/uiswing/layout/group.html
-        GroupLayout layoutHome = new GroupLayout(panelHome);
-        panelHome.setLayout(layoutHome);
-        layoutHome.setHorizontalGroup(
-                layoutHome.createSequentialGroup()
-                        .addGroup(layoutHome.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addComponent(jLabelHome)
-                                .addContainerGap(4, Short.MAX_VALUE))
-        );
-
-        layoutHome.setVerticalGroup(
-                layoutHome.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutHome.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addComponent(jLabelHome)
-                                .addContainerGap(5, Short.MAX_VALUE))
-        );
-*/
-        panelMain.add(pnPanelSearchHome);
-        //end home
-
-        /*
-        Customer
-        */
-
-/*
-        GroupLayout layoutEmployee = new GroupLayout(panelCustomer);
-        panelCustomer.setLayout(layoutEmployee);
-        layoutEmployee.setHorizontalGroup(
-                layoutEmployee.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutEmployee.createSequentialGroup()
-                                .addGap(500, 500, 500)
-                                .addComponent(filetesting)
-                                .addContainerGap(400, Short.MAX_VALUE))
-        );
-
-        layoutEmployee.setVerticalGroup(
-                layoutEmployee.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutEmployee.createSequentialGroup()
-                                .addGap(300, 300, 300)
-                                .addComponent(filetesting)
-                                .addContainerGap(350, Short.MAX_VALUE))
-        );
-        panelMain.add(panelCustomer);
-        //end customer
-*/
-        /*
-        View Cars
-        */
-/*
-        panelViewCars = new JPanel();
-        JLabel jLabelViewCars = new JLabel();
-
-        jLabelViewCars.setText("View Cars");
-
-        GroupLayout layoutViewCars = new GroupLayout(panelViewCars);
-        panelViewCars.setLayout(layoutViewCars);
-        layoutViewCars.setHorizontalGroup(
-                layoutViewCars.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutViewCars.createSequentialGroup()
-                                .addGap(500, 500, 500)
-                                .addComponent(jLabelViewCars)
-                                .addContainerGap(400, Short.MAX_VALUE))
-        );
-
-        layoutViewCars.setVerticalGroup(
-                layoutViewCars.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutViewCars.createSequentialGroup()
-                                .addGap(300, 300, 300)
-                                .addComponent(jLabelViewCars)
-                                .addContainerGap(350, Short.MAX_VALUE))
-        );
-        panelMain.add(panelViewCars);
-        //end view cars
-*/
-        /*
-        AddSaleCar
-        */
-/*
-        panelAddSaleCar = new JPanel();
-        JLabel jLabelAddSaleCar = new JLabel();
-
-        jLabelAddSaleCar.setText("Sell Car");
-
-        GroupLayout layoutAddSaleCar = new GroupLayout(panelAddSaleCar);
-        panelAddSaleCar.setLayout(layoutAddSaleCar);
-        layoutAddSaleCar.setHorizontalGroup(
-                layoutAddSaleCar.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutAddSaleCar.createSequentialGroup()
-                                .addGap(500, 500, 500)
-                                .addComponent(jLabelAddSaleCar)
-                                .addContainerGap(400, Short.MAX_VALUE))
-        );
-
-        layoutAddSaleCar.setVerticalGroup(
-                layoutAddSaleCar.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addGroup(layoutAddSaleCar.createSequentialGroup()
-                                .addGap(300, 300, 300)
-                                .addComponent(jLabelAddSaleCar)
-                                .addContainerGap(350, Short.MAX_VALUE))
-        );
-        panelMain.add(panelAddSaleCar);
-        //end AddSaleCar
-
-*/
-
-        //right panel
-        split.setRightComponent(panelMain);
-
-        GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(split)
-        );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                        .addComponent(split)
-        );
-
-
-
-
-        setTitle("Car System");
-        setResizable(false);
+        setContentPane(pnMain);
+        setSize(500, 300);
         setVisible(true);
-        setSize(900,700);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
-    }
+
+    } // end CarSystem()
+
+    public void addCarSale() {
+        String[] fuelTypeList = {"Fossil Fuel", "Electric"};
+
+        String make = JOptionPane.showInputDialog("Enter the make of the car");
+        String model = JOptionPane.showInputDialog("Enter the model of the car");
+        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
+
+        String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
+        boolean valid = false;
+        while (!valid) {
+
+            if (fuelType.equals("Fossil Fuel")) {
+                String emissions = JOptionPane.showInputDialog("Enter the emissions of the car");
+                String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
+                String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
+                String engineSize = JOptionPane.showInputDialog("Enter the engine size of the car");
+
+            } else if (fuelType.equals("Electric")) {
+                String batterySize = JOptionPane.showInputDialog("Enter the battery capacity of the car");
+                String Motor = JOptionPane.showInputDialog("Enter the motor type of the car");
 
 
-    private void homeButtonActionPerformed(ActionEvent actionEvent) {
-        panelMain.removeAll();
-        panelMain.add(pnPanelSearchHome);
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
-/*
-    private void customerButtonActionPerformed(ActionEvent actionEvent) {
-        panelMain.removeAll();
-        panelMain.add(panelCustomer);
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
-*/
-    private void addSaleCarButtonActionPerformed(ActionEvent actionEvent) {
-        panelMain.removeAll();
-        panelMain.add(panelAddSaleCar);
-        panelMain.repaint();
-        panelMain.revalidate();
+            }
+        }
     }
 
-    private void ViewCarsButtonActionPerformed(ActionEvent actionEvent) {
-        panelMain.removeAll();
-        panelMain.add(panelViewCars);
-        panelMain.repaint();
-        panelMain.revalidate();
-    }
-}//end
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String menu = e.getActionCommand();
+        if ((menu.equals("Sell Car")) || e.getSource() == btSellCar) {
+            addCarSale();
+        }
+    }// end actionPerformed
+} // end class CarSystem
