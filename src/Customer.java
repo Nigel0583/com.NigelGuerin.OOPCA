@@ -1,31 +1,30 @@
 public class Customer {
-    private String firstname;
-    private String surname;
+    public String name;
     private String DOB;
-    private String email;
+    public String email;
 
-    public String getEmail() {
-        return email;
+    @Override
+    public String toString() {
+        return "Name='" + name + '\n' +
+                "DOB" + DOB + '\n' +
+                "Email" + email ;
     }
 
-    public void setEmail(String email) {
+    public Customer(){
+        this("Unknown","Unknown","Unknown");
+    }
+    public Customer(String name, String DOB, String email) {
+        this.name = name;
+        this.DOB = DOB;
         this.email = email;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDOB() {
@@ -36,21 +35,12 @@ public class Customer {
         this.DOB = DOB;
     }
 
-    public Customer(String firstname, String surname, String DOB, String email) {
-        this.firstname = firstname;
-        this.surname = surname;
-        this.DOB = DOB;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "Name: " + firstname + surname+ '\n'+
-                "Email: " +email;
-    }
-
-    public Customer(){
-        this("Unknown","Unknown","Unknown","Unknown");
     }
 }
 
