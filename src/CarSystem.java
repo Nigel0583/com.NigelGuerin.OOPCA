@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class CarSystem extends JFrame implements ActionListener {
     private JPanel pnMain;
@@ -390,7 +391,7 @@ public class CarSystem extends JFrame implements ActionListener {
                                 if (phone.matches("^\\+(353|44)(\\s*\\d){9,12}$")) {
                                     this.customer = new Customer(name, DOB, email);
                                     this.customer = new Seller(phone, sellerType);
-                                    JOptionPane.showMessageDialog(null, customer);
+                                    JOptionPane.showMessageDialog(null, customers);
 
                                     valid = true;
                                 } else {

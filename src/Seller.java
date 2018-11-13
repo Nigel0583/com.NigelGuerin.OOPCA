@@ -5,8 +5,6 @@ public class Seller extends Customer {
     @Override
     public String toString() {
         return "Seller" +
-                "Name:'" + name + '\n' +
-                "Email:" + email + '\n'+
                 "Phone: " + phone + '\n' +
                 "Type of seller: " + sellerType;
     }

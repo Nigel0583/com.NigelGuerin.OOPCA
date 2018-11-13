@@ -1,7 +1,7 @@
 public class Customer {
-    public String name;
+    private String name;
     private String DOB;
-    public String email;
+    private String email;
 
     @Override
     public String toString() {
