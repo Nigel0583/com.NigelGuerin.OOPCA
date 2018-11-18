@@ -5,8 +5,7 @@ public class ElectricCar extends Car {
 
     @Override
     public String toString() {
-        return "ElectricCar" +
-                "BatterySize: " + batterySize + '\n' +
+        return "BatterySize: " + batterySize + "kW/h\n" +
                 "Motor: " + Motor ;
     }
 

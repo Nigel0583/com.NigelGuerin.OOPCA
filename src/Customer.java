@@ -3,6 +3,7 @@ public class Customer {
     private String DOB;
     private String email;
 
+
     @Override
     public String toString() {
         return "Name='" + name + '\n' +
@@ -42,5 +43,6 @@ public class Customer {
     public void setEmail(String email) {
         this.email = email;
     }
+
 }
 

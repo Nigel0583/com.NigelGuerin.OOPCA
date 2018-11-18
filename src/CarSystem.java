@@ -2,8 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Objects;
+import java.util.Scanner;
 
 public class CarSystem extends JFrame implements ActionListener {
     private JPanel pnMain;
@@ -31,6 +33,10 @@ public class CarSystem extends JFrame implements ActionListener {
     private JLabel lbSellcar;
     private Car car;
     private ArrayList<Car> cars = new ArrayList<>();
+    private FuelCar Fuelcar;
+    private ArrayList<FuelCar> Fuelcars = new ArrayList<>();
+    private ElectricCar Electriccar;
+    private ArrayList<ElectricCar> ElectricCars = new ArrayList<>();
     private Customer customer;
     private ArrayList<Customer> customers = new ArrayList<>();
     private JTextField tfName;
@@ -108,9 +114,9 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSidebar.setConstraints(btSellCar, gbcSidebar);
         pnSidebar.add(this.btSellCar);
 
-        this.btRegister = new JButton("Register");
+        this.btRegister = new JButton("Add Details");
         this.btRegister.addActionListener(this);
-        this.btRegister.setToolTipText("Register to sell a car");
+        this.btRegister.setToolTipText("Add Details to sell a car");
         gbcSidebar.gridy = 2;
         gbcSidebar.gridwidth = 1;
         gbcSidebar.gridheight = 1;
@@ -373,18 +379,20 @@ public class CarSystem extends JFrame implements ActionListener {
                 if (name.matches("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")) {
                     String DOB = JOptionPane.showInputDialog("Enter your date of birth");
                     //Regex for DOB https://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
-                    if (DOB.matches("^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^" +
-                            "(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^" +
-                            "(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$")) {
+                    if (DOB.matches("^(?:(?:31([/\\-.])(?:0?[13578]|1[02]))\\1|(?:(?:29|30)([/\\-.])(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^" +
+                            "(?:29([/\\-.])0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^" +
+                            "(?:0?[1-9]|1\\d|2[0-8])([/\\-.])(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$")) {
                         String email = JOptionPane.showInputDialog("Please enter your email");
                         //Regex for email https://emailregex.com/
                         if (email.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:" +
                                 "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" +
                                 "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\" +
-                                "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])")) {
+                                "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])")) {
                             String type = (String) JOptionPane.showInputDialog(null, "Customer type",
                                     "Customer type", JOptionPane.QUESTION_MESSAGE, null, customerTypeList, customerTypeList[0]);
                             if (type.equals("Seller")) {
+
+
                                 String sellerType = JOptionPane.showInputDialog("Enter seller type");
                                 String phone = JOptionPane.showInputDialog("Enter phone number");
                                 //Regex for phone  from  https://stackoverflow.com/questions/30347086/regex-for-english-and-irish-phone-numbers
@@ -401,7 +409,12 @@ public class CarSystem extends JFrame implements ActionListener {
 
                             } else if (type.equals("Buyer")) {
                                 this.customer = new Customer(name, DOB, email);
+
                                 JOptionPane.showMessageDialog(null, customer);
+                                ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("customer.dat"));
+                                oosFuelCar.writeObject(this.customer);
+                                oosFuelCar.close();
+
                                 valid = true;
                             }
                         }
@@ -412,20 +425,14 @@ public class CarSystem extends JFrame implements ActionListener {
                     name = JOptionPane.showInputDialog("Enter your name");
                 }
             } catch (NullPointerException n) {
-                int choice = JOptionPane.showConfirmDialog(null, "Field must not be empty. Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
-                    JTextField namefirst = new JTextField(6);
-                    JTextField namelast = new JTextField(6);
-                    JPanel pnName = new JPanel(new GridLayout(2, 1));
-                    pnName.add(new JLabel("First:"));
-                    pnName.add(namefirst);
-                    pnName.add(new JLabel("Surname:"));
-                    pnName.add(namelast);
-                    String firstname = namefirst.getText();
-                    String surname = namelast.getText();
+                   String name = JOptionPane.showInputDialog("Enter your name");
                 } else {
                     break;
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }
@@ -433,20 +440,20 @@ public class CarSystem extends JFrame implements ActionListener {
     }
 
     public void addCarSale() {
+
         String[] fuelTypeList = {"Combustion engine", "Electric"};
         String[] CarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
-        String make;
 
         boolean valid = false;
-        while (!valid) {
-            try {
-                make = JOptionPane.showInputDialog("Enter the make of the car");
-                if (make.length() > 0 && make.length() < 60) {
-                    String model = JOptionPane.showInputDialog("Enter the model of the car");
-                    if (model.length() > 0 && model.length() < 60) {
-                        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
-                        String r = regno.toUpperCase();
-                        //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
+            while (!valid) {
+                try {
+                    String make = JOptionPane.showInputDialog("Enter the make of the car");
+                    if (make.length() > 0 && make.length() < 60) {
+                        String model = JOptionPane.showInputDialog("Enter the model of the car");
+                        if (model.length() > 0 && model.length() < 60) {
+                            String regno = JOptionPane.showInputDialog("Enter the registration of the car");
+                            String r = regno.toUpperCase();
+                            //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
                          /*
                         A regular expression defines a search pattern for strings
                         The ^ Finds regex that must match at the beginning of the line.
@@ -454,63 +461,71 @@ public class CarSystem extends JFrame implements ActionListener {
                         The ? Occurs no or one times, ? is short for {0,1}.
                         The {2,3} Must occur between 2 to 3.
                         */
-                        if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
-                            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
-                            if (year == (int) year) {
-                                String type = (String) JOptionPane.showInputDialog(null, "Body type",
-                                        "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
+                            if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
+                                int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
+                                if (year == (int) year) {
+                                    String type = (String) JOptionPane.showInputDialog(null, "Body type",
+                                            "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
 
-                                String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
-                                        "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
+                                    String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                                            "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
 
-                                if (fuelType.equals("Fossil Fuel")) {
-                                    int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
-                                    String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
-                                    String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
-                                    double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
-                                    this.car = new FuelCar(emissions, transmission, fuel, engineSize);
-                                    this.car = new Car(make, model, type, regno, year);
-                                    JOptionPane.showMessageDialog(null, car);
+                                    if (fuelType.equals("Combustion engine")) {
+                                        int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
+                                        String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
+                                        String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
+                                        double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
+                                        this.Fuelcar = new FuelCar(emissions, transmission, fuel, engineSize);
+                                        this.car = new Car(make, model, type, regno, year);
+                                        JOptionPane.showMessageDialog(null, car + "\n" + Fuelcar);
+                                        ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("fuel.dat"));
+                                        oosFuelCar.writeObject(this.Fuelcars);
+                                        oosFuelCar.close();
+                                        valid = true;
 
-                                    valid = true;
+                                    } else if (fuelType.equals("Electric")) {
+                                        int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
+                                        String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
+                                        this.Electriccar = new ElectricCar(batterySize, motor);
+                                        this.car = new Car(make, model, type, regno, year);
+                                        JOptionPane.showMessageDialog(null, car + "\n" + Electriccar);
 
-                                } else if (fuelType.equals("Electric")) {
-                                    int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
-                                    String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
-                                    this.car = new ElectricCar(batterySize, motor);
-                                    this.car = new Car(make, model, type, regno, year);
-                                    JOptionPane.showMessageDialog(null, car);
-
-                                    valid = true;
+                                        valid = true;
+                                    }
+                                } else {
+                                    year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
                                 }
                             } else {
-                                year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
-                            }
-                        } else {
-                            regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
+                                regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
 
+                            }
+                        } else if (model.equals("")) {
+                            model = JOptionPane.showInputDialog("Model must have a value. Please re-enter");
+                        } else {
+                            model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
                         }
-                    } else if (model.equals("")) {
-                        model = JOptionPane.showInputDialog("Model must have a value. Please re-enter");
+                    } else if (make.equals("")) {
+                        make = JOptionPane.showInputDialog("Make must have a value. Please re-enter");
                     } else {
-                        model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
+                        make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
                     }
-                } else if (make.equals("")) {
-                    make = JOptionPane.showInputDialog("Make must have a value. Please re-enter");
-                } else {
-                    make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
-                }
-            } catch (NullPointerException n) {
-                int choice = JOptionPane.showConfirmDialog(null, "Field must not be empty. Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
-                if (choice == 0) {
-                    make = JOptionPane.showInputDialog("test test test tess");
-                } else {
-                    break;
+                } catch (NullPointerException n) {
+                    int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                    if (choice == 0) {
+                        String make = JOptionPane.showInputDialog("test test test tess");
+                    } else {
+                        break;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-        }
+
+        this.Fuelcars.add(this.Fuelcar);
+        this.ElectricCars.add(this.Electriccar);
         this.cars.add(this.car);
-    }//end addCarSale
+
+    } //end addCarSale
 
     @Override
     public void actionPerformed(ActionEvent e) {

@@ -6,10 +6,10 @@ public class FuelCar extends Car {
 
     @Override
     public String toString() {
-        return "Emissions=" + emissions +  '\n' +
+        return "Emissions: " + emissions +  '\n' +
                 "Transmission: " + transmission + '\n' +
                 "Fuel: " + fuel + '\n' +
-                "Engine Size: " + engineSize;
+                "Engine Size: " + engineSize +"L";
     }
 
     public FuelCar(int emissions, String transmission, String fuel, double engineSize) {
