@@ -12,9 +12,9 @@ public class Customer implements Serializable {
 
     @Override
     public String toString() {
-        return "Name='" + name + '\n' +
-                "DOB" + DOB + '\n' +
-                "Email" + email ;
+        return "Name: " + name + '\n' +
+                "DOB: " + DOB + '\n' +
+                "Email: " + email ;
     }
 
     public Customer(){
