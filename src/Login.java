@@ -2,11 +2,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by Nigel Guerin
  */
 public class Login extends JDialog implements ActionListener {
+    private String user;
+    private String pass;
     JPanel pnInput;
     JTextField tfUser;
     JTextField tfPass;
@@ -25,7 +28,7 @@ public class Login extends JDialog implements ActionListener {
         GridBagConstraints gbcInput = new GridBagConstraints();
         pnInput.setLayout(gbInput);
 
-        tfUser = new JTextField();
+       this.tfUser = new JTextField();
         gbcInput.gridx = 6;
         gbcInput.gridy = 2;
         gbcInput.gridwidth = 10;
@@ -37,7 +40,7 @@ public class Login extends JDialog implements ActionListener {
         gbInput.setConstraints(tfUser, gbcInput);
         pnInput.add(tfUser);
 
-        tfPass = new JTextField();
+        this.tfPass = new JPasswordField();
         gbcInput.gridx = 6;
         gbcInput.gridy = 4;
         gbcInput.gridwidth = 10;
@@ -73,7 +76,8 @@ public class Login extends JDialog implements ActionListener {
         gbInput.setConstraints(lbPass, gbcInput);
         pnInput.add(lbPass);
 
-        btLogin = new JButton("Login");
+        this.btLogin = new JButton("Login");
+        this.btLogin.addActionListener(this);
         gbcInput.gridx = 2;
         gbcInput.gridy = 6;
         gbcInput.gridwidth = 5;
@@ -85,7 +89,8 @@ public class Login extends JDialog implements ActionListener {
         gbInput.setConstraints(btLogin, gbcInput);
         pnInput.add(btLogin);
 
-        btCancel = new JButton("Cancel");
+        this.btCancel = new JButton("Cancel");
+        this.btCancel.addActionListener(this);
         gbcInput.gridx = 8;
         gbcInput.gridy = 6;
         gbcInput.gridwidth = 5;
@@ -108,6 +113,26 @@ public class Login extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        String login = e.getActionCommand();
+        if ((e.getSource() == this.btLogin) || login.equals("Login")) {
+            this.user = this.tfUser.getText();
+            this.pass = this.tfPass.getText();
+            if(!this.user.equals("") && !this.pass.equals("")){
+                CarSystem carSystem = new CarSystem();
+                carSystem.setVisible(true);
+                dispose();
+            }
 
+            else{
+                JOptionPane.showMessageDialog(null,"The email or password is incorrect","Error",JOptionPane.WARNING_MESSAGE);
+                this.tfUser.setText("");
+                this.tfPass.setText("");
+                this.tfUser.requestFocus();
+            }
+
+
+        }  else if (e.getSource() == this.btCancel || login.equals("Cancel")){
+            System.exit(0);
+        }
     }
 }
