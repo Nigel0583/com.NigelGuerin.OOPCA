@@ -1,3 +1,6 @@
+/**
+ * Created by Nigel Guerin
+ */
 public class FuelCar extends Car {
     private int emissions;
     private String transmission;

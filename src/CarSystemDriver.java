@@ -1,5 +1,8 @@
-public class CarSystemDriver {
-    public static void main(String[] args) {
-        CarSystem carSys = new CarSystem();
+/**
+ * Created by Nigel Guerin
+ */
+public interface CarSystemDriver {
+     static void main(String[] args) {
+        Login log = new Login();
     }
 }

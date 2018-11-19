@@ -7,10 +7,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * Created by Nigel Guerin
+ */
+
 public class CarSystem extends JFrame implements ActionListener {
     private JPanel pnMain;
     private JPanel pnSidebar;
-    private JButton btHome;
     private JButton btViewCars;
     private JButton btSellCar;
     private JButton btRegister;
@@ -39,11 +42,12 @@ public class CarSystem extends JFrame implements ActionListener {
     private ArrayList<ElectricCar> ElectricCars = new ArrayList<>();
     private Customer customer;
     private ArrayList<Customer> customers = new ArrayList<>();
-    private JTextField tfName;
-    private JTextField namefirst;
-    private JTextField namelast;
     //------------------------------------------------------------------------------
 
+    /**
+     * Creates components of the GUI
+    *
+     */
     public CarSystem() {
         super("CarSystem");
         setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
@@ -79,19 +83,13 @@ public class CarSystem extends JFrame implements ActionListener {
 
 
         pnSidebar = new JPanel();
-        //https://docs.oracle.com/javase/tutorial/uiswing/layout/gridbag.html
+        //Learned from https://docs.oracle.com/javase/tutorial/uiswing/layout/gridbag.html
         //Layout manager that allows you to position components relative to one another using constraints
         GridBagLayout gbSidebar = new GridBagLayout();
         GridBagConstraints gbcSidebar = new GridBagConstraints();
         pnSidebar.setLayout(gbSidebar);
 
-        btHome = new JButton("Home");
-        gbcSidebar.gridwidth = 1;
-        gbcSidebar.gridheight = 1;
-        gbcSidebar.fill = GridBagConstraints.BOTH;
-        gbcSidebar.anchor = GridBagConstraints.NORTH;
-        gbSidebar.setConstraints(btHome, gbcSidebar);
-        pnSidebar.add(btHome);
+
 
         btViewCars = new JButton("View Cars");
         gbcSidebar.gridy = 1;
@@ -367,6 +365,10 @@ public class CarSystem extends JFrame implements ActionListener {
 
     } // end CarSystem()
 
+    /**
+     * Used to add a Customer/Seller
+     *
+     */
     public void addCustomer() {
         String[] customerTypeList = {"Seller", "Buyer"};
         boolean valid = false;
@@ -438,7 +440,10 @@ public class CarSystem extends JFrame implements ActionListener {
         }
         this.customers.add(this.customer);
     }
-
+    /**
+     * Used to add car to sell
+     *
+     */
     public void addCarSale() {
 
         String[] fuelTypeList = {"Combustion engine", "Electric"};
@@ -526,6 +531,7 @@ public class CarSystem extends JFrame implements ActionListener {
         this.cars.add(this.car);
 
     } //end addCarSale
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

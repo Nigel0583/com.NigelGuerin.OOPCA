@@ -1,3 +1,7 @@
+/**
+ * Created by Nigel Guerin
+ */
+
 public class Customer {
     private String name;
     private String DOB;

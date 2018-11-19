@@ -1,3 +1,6 @@
+/**
+ * Created by Nigel Guerin
+ */
 public class ElectricCar extends Car {
     private int batterySize;
     private String Motor;

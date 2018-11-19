@@ -1,3 +1,7 @@
+/**
+ * Created by Nigel Guerin
+ */
+
 public class Seller extends Customer {
     private String phone;
     private String sellerType;

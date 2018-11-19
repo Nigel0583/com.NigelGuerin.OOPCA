@@ -1,5 +1,6 @@
-import java.io.Serializable;
-
+/**
+ * Created by Nigel Guerin
+ */
 public class Car  {
     private String model;
     private String make;
