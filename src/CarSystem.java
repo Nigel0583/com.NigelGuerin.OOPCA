@@ -420,9 +420,11 @@ public class CarSystem extends JFrame implements ActionListener {
 
                                 valid = true;
                             }
+                        }else {
+                            email = JOptionPane.showInputDialog("Invalid email. Re-enter your date of email");
                         }
                     } else {
-                        DOB = JOptionPane.showInputDialog("Invalid DOB. Renter your date of birth");
+                        DOB = JOptionPane.showInputDialog("Invalid DOB. Re-enter your date of birth");
                     }
                 } else {
                     name = JOptionPane.showInputDialog("Enter your name");
@@ -453,7 +455,7 @@ public class CarSystem extends JFrame implements ActionListener {
         boolean valid = false;
         while (!valid) {
             try {
-                Runtime.getRuntime().exec("explorer.exe /select, path");
+                //Runtime.getRuntime().exec("explorer.exe /select, path");
                 String make = JOptionPane.showInputDialog("Enter the make of the car");
                 if (make.length() > 2 && make.length() < 60) {
                     String model = JOptionPane.showInputDialog("Enter the model of the car");
