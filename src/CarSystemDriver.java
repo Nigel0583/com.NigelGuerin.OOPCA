@@ -3,6 +3,7 @@
  */
 public interface CarSystemDriver {
      static void main(String[] args) {
-        Login log = new Login();
+        Login log = new Login("file:image/song.wav");
+        log.setVisible(true);
     }
 }

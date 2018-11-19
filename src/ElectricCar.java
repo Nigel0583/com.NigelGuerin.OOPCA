@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Created by Nigel Guerin
  */
-public class ElectricCar extends Car {
+public class ElectricCar extends Car implements Serializable {
     private int batterySize;
     private String Motor;
 

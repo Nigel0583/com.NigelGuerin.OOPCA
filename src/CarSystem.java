@@ -4,8 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Scanner;
+
 
 /**
  * Created by Nigel Guerin
@@ -46,7 +45,6 @@ public class CarSystem extends JFrame implements ActionListener {
 
     /**
      * Creates components of the GUI
-    *
      */
     public CarSystem() {
         super("CarSystem");
@@ -90,8 +88,8 @@ public class CarSystem extends JFrame implements ActionListener {
         pnSidebar.setLayout(gbSidebar);
 
 
-
-        btViewCars = new JButton("View Cars");
+        this.btViewCars = new JButton("View Cars");
+        this.btViewCars.addActionListener(this);
         gbcSidebar.gridy = 1;
         gbcSidebar.gridwidth = 1;
         gbcSidebar.gridheight = 1;
@@ -99,7 +97,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbcSidebar.weightx = 1;
         gbcSidebar.anchor = GridBagConstraints.NORTH;
         gbSidebar.setConstraints(btViewCars, gbcSidebar);
-        pnSidebar.add(btViewCars);
+        pnSidebar.add(this.btViewCars);
 
         this.btSellCar = new JButton("Sell Car");
         this.btSellCar.addActionListener(this);
@@ -122,7 +120,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbcSidebar.weightx = 1;
         gbcSidebar.anchor = GridBagConstraints.NORTH;
         gbSidebar.setConstraints(btRegister, gbcSidebar);
-        pnSidebar.add(btRegister);
+        pnSidebar.add(this.btRegister);
         sppSplit.setLeftComponent(pnSidebar);
 
         /*
@@ -331,7 +329,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbcAd.weighty = 0;
         gbcAd.anchor = GridBagConstraints.NORTH;
         gbAd.setConstraints(btSellCar, gbcAd);
-        pnAd.add(btSellCar);
+        pnAd.add(this.btSellCar);
         gbcRightpanel.gridx = 8;
         gbcRightpanel.gridy = 0;
         gbcRightpanel.gridwidth = 3;
@@ -367,7 +365,6 @@ public class CarSystem extends JFrame implements ActionListener {
 
     /**
      * Used to add a Customer/Seller
-     *
      */
     public void addCustomer() {
         String[] customerTypeList = {"Seller", "Buyer"};
@@ -429,7 +426,7 @@ public class CarSystem extends JFrame implements ActionListener {
             } catch (NullPointerException n) {
                 int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
-                   String name = JOptionPane.showInputDialog("Enter your name");
+                    String name = JOptionPane.showInputDialog("Enter your name");
                 } else {
                     break;
                 }
@@ -440,9 +437,9 @@ public class CarSystem extends JFrame implements ActionListener {
         }
         this.customers.add(this.customer);
     }
+
     /**
      * Used to add car to sell
-     *
      */
     public void addCarSale() {
 
@@ -450,15 +447,16 @@ public class CarSystem extends JFrame implements ActionListener {
         String[] CarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
 
         boolean valid = false;
-            while (!valid) {
-                try {
-                    String make = JOptionPane.showInputDialog("Enter the make of the car");
-                    if (make.length() > 0 && make.length() < 60) {
-                        String model = JOptionPane.showInputDialog("Enter the model of the car");
-                        if (model.length() > 0 && model.length() < 60) {
-                            String regno = JOptionPane.showInputDialog("Enter the registration of the car");
-                            String r = regno.toUpperCase();
-                            //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
+        while (!valid) {
+            try {
+                Runtime.getRuntime().exec("explorer.exe /select, path");
+                String make = JOptionPane.showInputDialog("Enter the make of the car");
+                if (make.length() > 2 && make.length() < 60) {
+                    String model = JOptionPane.showInputDialog("Enter the model of the car");
+                    if (model.length() >= 1 && model.length() < 60) {
+                        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
+                        String r = regno.toUpperCase();
+                        //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
                          /*
                         A regular expression defines a search pattern for strings
                         The ^ Finds regex that must match at the beginning of the line.
@@ -466,65 +464,62 @@ public class CarSystem extends JFrame implements ActionListener {
                         The ? Occurs no or one times, ? is short for {0,1}.
                         The {2,3} Must occur between 2 to 3.
                         */
-                            if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
-                                int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
-                                if (year == (int) year) {
-                                    String type = (String) JOptionPane.showInputDialog(null, "Body type",
-                                            "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
+                        if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
+                            double cost = Integer.parseInt(JOptionPane.showInputDialog("Enter the price of the car"));
+                            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
+                            if (year == (int) year && (double) cost == cost) {
+                                String type = (String) JOptionPane.showInputDialog(null, "Body type",
+                                        "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
 
-                                    String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
-                                            "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
+                                String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                                        "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
 
-                                    if (fuelType.equals("Combustion engine")) {
-                                        int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
-                                        String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
-                                        String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
-                                        double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
-                                        this.Fuelcar = new FuelCar(emissions, transmission, fuel, engineSize);
-                                        this.car = new Car(make, model, type, regno, year);
-                                        JOptionPane.showMessageDialog(null, car + "\n" + Fuelcar);
-                                        ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("fuel.dat"));
-                                        oosFuelCar.writeObject(this.Fuelcars);
-                                        oosFuelCar.close();
-                                        valid = true;
+                                if (fuelType.equals("Combustion engine")) {
+                                    int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
+                                    String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
+                                    String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
+                                    double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
+                                    this.Fuelcar = new FuelCar(emissions, transmission, fuel, engineSize);
+                                    this.car = new Car(make, model, type, regno, year, cost);
+                                    JOptionPane.showMessageDialog(null, car + "\n" + Fuelcar, "Added Car", JOptionPane.INFORMATION_MESSAGE);
+                                    ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("fuel.dat"));
+                                    oosFuelCar.writeObject(this.Fuelcars);
+                                    oosFuelCar.close();
+                                    valid = true;
 
-                                    } else if (fuelType.equals("Electric")) {
-                                        int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
-                                        String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
-                                        this.Electriccar = new ElectricCar(batterySize, motor);
-                                        this.car = new Car(make, model, type, regno, year);
-                                        JOptionPane.showMessageDialog(null, car + "\n" + Electriccar);
+                                } else if (fuelType.equals("Electric")) {
+                                    int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
+                                    String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
+                                    this.Electriccar = new ElectricCar(batterySize, motor);
+                                    this.car = new Car(make, model, type, regno, year, cost);
+                                    JOptionPane.showMessageDialog(null, car + "\n" + Electriccar);
 
-                                        valid = true;
-                                    }
-                                } else {
-                                    year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
+                                    valid = true;
                                 }
                             } else {
-                                regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
-
+                                year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
                             }
-                        } else if (model.equals("")) {
-                            model = JOptionPane.showInputDialog("Model must have a value. Please re-enter");
                         } else {
-                            model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
+                            regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
+
                         }
-                    } else if (make.equals("")) {
-                        make = JOptionPane.showInputDialog("Make must have a value. Please re-enter");
                     } else {
-                        make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
+                        model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
                     }
-                } catch (NullPointerException n) {
-                    int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
-                    if (choice == 0) {
-                        String make = JOptionPane.showInputDialog("test test test tess");
-                    } else {
-                        break;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } else {
+                    make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
                 }
+            } catch (NullPointerException n) {
+                int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
+                if (choice == 0) {
+                    String make = JOptionPane.showInputDialog("test test test tess");
+                } else {
+                    break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        }
 
         this.Fuelcars.add(this.Fuelcar);
         this.ElectricCars.add(this.Electriccar);
@@ -532,6 +527,20 @@ public class CarSystem extends JFrame implements ActionListener {
 
     } //end addCarSale
 
+    public void viewCars() {
+        JTextArea taCars = new JTextArea();
+        try {
+            for (Car car1 : this.cars) {
+                this.car = car1;
+                taCars.append(this.car + "\n");
+
+            }
+            JOptionPane.showMessageDialog(null, taCars, "Cars for sale", JOptionPane.PLAIN_MESSAGE);
+
+        } catch (NullPointerException n) {
+            JOptionPane.showMessageDialog(null, "No cars found", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -540,6 +549,8 @@ public class CarSystem extends JFrame implements ActionListener {
             addCarSale();
         } else if (menu.equals("Register") || e.getSource() == btRegister) {
             addCustomer();
+        } else if ((menu.equals("View car")) || e.getSource() == btViewCars) {
+            viewCars();
         }
     }// end actionPerformed
 } // end class CarSystem

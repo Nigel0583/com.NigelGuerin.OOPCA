@@ -1,7 +1,9 @@
+import java.io.Serializable;
+
 /**
  * Created by Nigel Guerin
  */
-public class FuelCar extends Car {
+public class FuelCar extends Car implements Serializable {
     private int emissions;
     private String transmission;
     private String fuel;

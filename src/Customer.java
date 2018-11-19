@@ -1,8 +1,10 @@
+import java.io.Serializable;
+
 /**
  * Created by Nigel Guerin
  */
 
-public class Customer {
+public class Customer implements Serializable {
     private String name;
     private String DOB;
     private String email;

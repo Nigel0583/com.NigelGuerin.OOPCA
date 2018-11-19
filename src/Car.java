@@ -1,24 +1,29 @@
+import java.io.Serializable;
+
 /**
  * Created by Nigel Guerin
  */
-public class Car  {
+public class Car implements Serializable {
     private String model;
     private String make;
     private String type;
     private String Regno;
     private int year;
+    private double cost;
 
 
-    public Car(){
-        this("Unknown","Unknown","Unknown","Unknown",0);
+
+    public Car() {
+        this("Unknown", "Unknown", "Unknown", "Unknown", 0,0.0);
     }
 
-    public Car(String model, String make, String type,String regno,int year) {
+    public Car(String model, String make, String type, String regno, int year,double cost) {
         this.model = model;
         this.make = make;
         this.type = type;
         this.year = year;
         Regno = regno;
+        this.cost = cost;
 
     }
 
@@ -28,7 +33,8 @@ public class Car  {
                 "Model: " + model + '\n' +
                 "Type: " + type + '\n' +
                 "Year: " + year + '\n' +
-                "Registration: " + Regno ;
+                "Registration: " + Regno + '\n' +
+                "Cost: €" +cost;
     }
 
     public String getModel() {
@@ -70,6 +76,14 @@ public class Car  {
 
     public void setRegno(String regno) {
         Regno = regno;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
 

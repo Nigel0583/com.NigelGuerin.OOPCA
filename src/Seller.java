@@ -1,8 +1,10 @@
+import java.io.Serializable;
+
 /**
  * Created by Nigel Guerin
  */
 
-public class Seller extends Customer {
+public class Seller extends Customer  implements Serializable {
     private String phone;
     private String sellerType;
 
