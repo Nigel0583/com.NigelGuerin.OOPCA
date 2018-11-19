@@ -33,7 +33,12 @@ public class Login extends JFrame implements ActionListener {
     public Login(String url) {
         try {
             setTitle("Enter Details");
-            setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+            try {
+                setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+            } catch (Exception x){
+
+            }
+
 
             pnInput = new JPanel();
             GridBagLayout gbInput = new GridBagLayout();

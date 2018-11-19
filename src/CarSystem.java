@@ -48,7 +48,11 @@ public class CarSystem extends JFrame implements ActionListener {
      */
     public CarSystem() {
         super("CarSystem");
-        setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+        try {
+            setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+        } catch (Exception x){
+
+        }
 
         pnMain = new JPanel();
         pnMain.setAlignmentX(1);
