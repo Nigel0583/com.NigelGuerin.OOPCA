@@ -17,7 +17,7 @@ public class Car implements Serializable {
         this("Unknown", "Unknown", "Unknown", "Unknown", 0,0.0);
     }
 
-    public Car(String model, String make, String type, String regno, int year,double cost) {
+    public Car(String make , String model , String type, String regno, int year,double cost) {
         this.model = model;
         this.make = make;
         this.type = type;

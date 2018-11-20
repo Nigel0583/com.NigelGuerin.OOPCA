@@ -1,8 +1,10 @@
+import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -38,6 +40,13 @@ public class Login extends JFrame implements ActionListener {
             } catch (Exception x){
 
             }
+
+
+
+
+            JPanel jpanel=new JPanel();
+            jpanel.setSize(50,50);
+            jpanel.setLayout(new FlowLayout());
 
 
             pnInput = new JPanel();
@@ -119,6 +128,16 @@ public class Login extends JFrame implements ActionListener {
             gbcInput.anchor = GridBagConstraints.NORTH;
             gbInput.setConstraints(btCancel, gbcInput);
             pnInput.add(btCancel);
+
+            ImageIcon carimg = new ImageIcon("car.jpg");
+            JLabel carDis = new JLabel(carimg);
+            gbcInput.gridx = 10;
+            gbcInput.gridy = 10;
+            gbcInput.fill = GridBagConstraints.BOTH;
+            gbcInput.weightx = 1;
+            gbcInput.weighty = 0;
+            gbcInput.anchor = GridBagConstraints.NORTH;
+            pnInput.add(carDis,gbcInput);
 
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

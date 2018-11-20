@@ -41,6 +41,8 @@ public class CarSystem extends JFrame implements ActionListener {
     private ArrayList<ElectricCar> ElectricCars = new ArrayList<>();
     private Customer customer;
     private ArrayList<Customer> customers = new ArrayList<>();
+    private Seller seller;
+    private ArrayList<Seller> sellers = new ArrayList<>();
     //------------------------------------------------------------------------------
 
     /**
@@ -50,7 +52,7 @@ public class CarSystem extends JFrame implements ActionListener {
         super("CarSystem");
         try {
             setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
-        } catch (Exception x){
+        } catch (Exception x) {
 
         }
 
@@ -394,19 +396,20 @@ public class CarSystem extends JFrame implements ActionListener {
                             String type = (String) JOptionPane.showInputDialog(null, "Customer type",
                                     "Customer type", JOptionPane.QUESTION_MESSAGE, null, customerTypeList, customerTypeList[0]);
                             if (type.equals("Seller")) {
-
-
                                 String sellerType = JOptionPane.showInputDialog("Enter seller type");
                                 String phone = JOptionPane.showInputDialog("Enter phone number");
                                 //Regex for phone  from  https://stackoverflow.com/questions/30347086/regex-for-english-and-irish-phone-numbers
                                 if (phone.matches("^\\+(353|44)(\\s*\\d){9,12}$")) {
                                     this.customer = new Customer(name, DOB, email);
-                                    this.customer = new Seller(phone, sellerType);
-                                    JOptionPane.showMessageDialog(null, customers);
+                                    this.seller = new Seller(phone, sellerType);
+                                    JOptionPane.showMessageDialog(null, customers + "\n" + seller);
+                                    ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("seller.dat"));
+                                    oosCustomer.writeObject(this.seller);
+                                    oosCustomer.close();
 
                                     valid = true;
                                 } else {
-                                    phone = JOptionPane.showInputDialog("Invalid phone number. 012-123-1234 Please re-enter");
+                                    phone = JOptionPane.showInputDialog("Invalid phone number. +353123456789 Please re-enter");
                                 }
 
 
@@ -414,13 +417,13 @@ public class CarSystem extends JFrame implements ActionListener {
                                 this.customer = new Customer(name, DOB, email);
 
                                 JOptionPane.showMessageDialog(null, customer);
-                                ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("customer.dat"));
-                                oosFuelCar.writeObject(this.customer);
-                                oosFuelCar.close();
+                                ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
+                                oosCustomer.writeObject(this.customer);
+                                oosCustomer.close();
 
                                 valid = true;
                             }
-                        }else {
+                        } else {
                             email = JOptionPane.showInputDialog("Invalid email. Re-enter your date of email");
                         }
                     } else {
@@ -441,6 +444,7 @@ public class CarSystem extends JFrame implements ActionListener {
             }
 
         }
+        this.sellers.add(this.seller);
         this.customers.add(this.customer);
     }
 
@@ -499,7 +503,9 @@ public class CarSystem extends JFrame implements ActionListener {
                                     this.Electriccar = new ElectricCar(batterySize, motor);
                                     this.car = new Car(make, model, type, regno, year, cost);
                                     JOptionPane.showMessageDialog(null, car + "\n" + Electriccar);
-
+                                    ObjectOutputStream oosElectric = new ObjectOutputStream(new FileOutputStream("electric.txt"));
+                                    oosElectric.writeObject(this.Electriccar);
+                                    oosElectric.close();
                                     valid = true;
                                 }
                             } else {
