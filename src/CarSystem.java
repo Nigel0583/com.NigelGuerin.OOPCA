@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-
+import java.util.Objects;
 
 /**
  * Created by Nigel Guerin
@@ -46,10 +46,10 @@ public class CarSystem extends JFrame implements ActionListener {
     private ArrayList<Seller> sellers = new ArrayList<>();
     private JButton btResetG = new JButton("Reset");
     private JButton btAddG = new JButton("Sell Car");
-    private JPanel pnButtons = new JPanel();
     private JFrame frameG = new JFrame("Add Car sale");
     private JLabel lbMakeG = new JLabel("Make");
     private JLabel lbModelG = new JLabel("Model");
+    private JLabel lbTypeG = new JLabel("Type");
     private JLabel lbRegnoG = new JLabel("RegNo");
     private JLabel lbCostG = new JLabel("Cost");
     private JLabel lbYearG = new JLabel("Year");
@@ -69,9 +69,8 @@ public class CarSystem extends JFrame implements ActionListener {
     private JTextField tfEngineG = new JTextField(10);
     private JTextField tfBatteryG = new JTextField(10);
     private JTextField tfMotorG = new JTextField(10);
-    private JComboBox cmbFuelType;
+    private JComboBox cmbCarBodyTypes;
     //------------------------------------------------------------------------------
-
 
     /**
      * Instantiates a new Car system.
@@ -133,16 +132,15 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSidebar.setConstraints(btViewCars, gbcSidebar);
         pnSidebar.add(this.btViewCars);
 
-        this.btSellCar = new JButton("Sell Car");
-        this.btSellCar.addActionListener(this);
-        gbcSidebar.gridy = 3;
+
+       /* gbcSidebar.gridy = 3;
         gbcSidebar.gridwidth = 1;
         gbcSidebar.gridheight = 1;
         gbcSidebar.fill = GridBagConstraints.BOTH;
         gbcSidebar.weightx = 1;
         gbcSidebar.anchor = GridBagConstraints.NORTH;
         gbSidebar.setConstraints(btSellCar, gbcSidebar);
-        pnSidebar.add(this.btSellCar);
+        pnSidebar.add(this.btSellCar);*/
 
         this.btRegister = new JButton("Add Details");
         this.btRegister.addActionListener(this);
@@ -156,7 +154,6 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSidebar.setConstraints(btRegister, gbcSidebar);
         pnSidebar.add(this.btRegister);
         sppSplit.setLeftComponent(pnSidebar);
-
 
         // Right panel
 
@@ -352,7 +349,8 @@ public class CarSystem extends JFrame implements ActionListener {
         gbAd.setConstraints(lbSellcar, gbcAd);
         pnAd.add(lbSellcar);
 
-        btSellCar = new JButton("Sell Car");
+        this.btSellCar = new JButton("Sell Car");
+        btSellCar.setName("Sell Car");
         this.btSellCar.addActionListener(this);
         gbcAd.gridx = 0;
         gbcAd.gridy = 3;
@@ -397,14 +395,12 @@ public class CarSystem extends JFrame implements ActionListener {
 
     } // end CarSystem()
 
-
     /**
      * Add customer.
      */
     public void addCustomer() {
         String[] customerTypeList = {"Seller", "Buyer"};
         boolean valid = false;
-
 
         while (!valid) {
             try {
@@ -432,9 +428,12 @@ public class CarSystem extends JFrame implements ActionListener {
                                     this.customer = new Customer(name, DOB, email);
                                     this.seller = new Seller(phone, sellerType);
                                     JOptionPane.showMessageDialog(null, customers + "\n" + seller);
-                                    ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("seller.dat"));
-                                    oosCustomer.writeObject(this.seller);
+                                    ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
+                                    oosCustomer.writeObject(this.customer);
                                     oosCustomer.close();
+                                    ObjectOutputStream oosSeller = new ObjectOutputStream(new FileOutputStream("seller.dat"));
+                                    oosSeller.writeObject(this.seller);
+                                    oosSeller.close();
 
                                     valid = true;
                                 } else {
@@ -481,22 +480,28 @@ public class CarSystem extends JFrame implements ActionListener {
     /**
      * Add car sale.
      */
-    public void addCarSale() {
+    public void addCarSale()  {
 
-        try {
-            setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
-        } catch (Exception x) {
-
-        }
         btResetG.addActionListener(this);
         btAddG.addActionListener(this);
-        pnButtons.add(btAddG);
-        pnButtons.add(btResetG);
 
-        String[] CarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
+
+
+        String[] dataCarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
+        cmbCarBodyTypes = new JComboBox(dataCarBodyTypes);
+
         Container container = frameG.getContentPane();
         GroupLayout addSaleLayout = new GroupLayout(container);
         container.setLayout(addSaleLayout);
+
+        try {
+            frameG.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+        } catch (Exception x) {
+
+        }
+        frameG.setVisible(true);
+        frameG.setLocationRelativeTo(null);
+
 
         addSaleLayout.setAutoCreateContainerGaps(true);
         addSaleLayout.setAutoCreateGaps(true);
@@ -505,14 +510,12 @@ public class CarSystem extends JFrame implements ActionListener {
        /* String[] dataFuelType = {"Combustion engine", "Electric"};
         cmbFuelType = new JComboBox(dataFuelType);*/
 
-        String type = (String) JOptionPane.showInputDialog(null, "Body type",
-                "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
-
         addSaleLayout.setHorizontalGroup(
                 addSaleLayout.createSequentialGroup()
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(lbMakeG)
                                 .addComponent(lbModelG)
+                                .addComponent(lbTypeG)
                                 .addComponent(lbRegnoG)
                                 .addComponent(lbCostG)
                                 .addComponent(lbYearG)
@@ -520,13 +523,15 @@ public class CarSystem extends JFrame implements ActionListener {
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(tfMakeG)
                                 .addComponent(tfModelG)
+                                .addComponent(cmbCarBodyTypes)
                                 .addComponent(tfRegNoG)
                                 .addComponent(tfCostG)
                                 .addComponent(tfYearG)
-                        )
-                        .addGroup(addSaleLayout.createSequentialGroup()
-                                .addComponent(pnButtons)
+                                .addGroup(addSaleLayout.createSequentialGroup()
+                                        .addComponent(btResetG)
+                                        .addComponent(btAddG)
 
+                                )
                         )
         );
         addSaleLayout.setVerticalGroup(
@@ -539,7 +544,10 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(lbModelG)
                                 .addComponent(tfModelG)
                         )
-
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbTypeG)
+                                .addComponent(cmbCarBodyTypes)
+                        )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lbRegnoG)
                                 .addComponent(tfRegNoG)
@@ -553,20 +561,29 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(tfYearG)
                         )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                .addComponent(pnButtons)
+                                .addComponent(btResetG)
+                                .addComponent(btAddG)
 
                         )
         );
-        frameG.setVisible(true);
-        frameG.setLocationRelativeTo(null);
         frameG.setResizable(false);
         frameG.pack();
     } //end addCarSale
 
+
     public void addCar() {
-
+        String make = tfMakeG.getText();
+        String model  = tfModelG.getText();
+        String type = Objects.requireNonNull(cmbCarBodyTypes.getSelectedItem()).toString();
+        String regno = tfRegNoG.getText();
+        String year = tfYearG.getText();
+        int years = Integer.parseInt(year);
+        String cost = tfCostG.getText();
+        double costs = Integer.parseInt(cost);
+        this.car = new Car(make,model,type,regno,years,costs);
+        JOptionPane.showMessageDialog(null, car , "Added Car", JOptionPane.INFORMATION_MESSAGE);
     }
-
+    
     public void resetbutton() {
         tfMakeG.setText("");
         tfModelG.setText("");
@@ -601,13 +618,13 @@ public class CarSystem extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String menu = e.getActionCommand();
-        if ((menu.equals("Sell Car")) || e.getSource() == btSellCar) {
+        if ( btSellCar.getName().equals( ( (Component)e.getSource() ).getName())) {
             addCarSale();
         } else if (menu.equals("Register") || e.getSource() == btRegister) {
             addCustomer();
         } else if ((menu.equals("View car")) || e.getSource() == btViewCars) {
             viewCars();
-        } else if (e.getSource() == btAddG) {
+        } else if ( e.getSource() == btAddG) {
             addCar();
         } else if (e.getSource() == btResetG) {
             resetbutton();

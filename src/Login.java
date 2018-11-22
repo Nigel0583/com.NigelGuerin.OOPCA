@@ -31,10 +31,12 @@ public class Login extends JFrame implements ActionListener {
 
     /**
      * Instantiates a new Login.
-     *
-     * @param url the url
+     *  @param url the url
+     * @param f
+     * @param s
+     * @param s1
      */
-    public Login(String url) {
+    public Login(String url, String f, String s, String s1) {
         try {
             setTitle("Enter Details");
             try {
