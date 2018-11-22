@@ -1,17 +1,14 @@
-import javax.imageio.ImageIO;
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  * Created by Nigel Guerin
  */
@@ -32,6 +29,11 @@ public class Login extends JFrame implements ActionListener {
 
     //------------------------------------------------------------------------------
 
+    /**
+     * Instantiates a new Login.
+     *
+     * @param url the url
+     */
     public Login(String url) {
         try {
             setTitle("Enter Details");
@@ -41,13 +43,9 @@ public class Login extends JFrame implements ActionListener {
 
             }
 
-
-
-
             JPanel jpanel=new JPanel();
             jpanel.setSize(50,50);
             jpanel.setLayout(new FlowLayout());
-
 
             pnInput = new JPanel();
             GridBagLayout gbInput = new GridBagLayout();
@@ -129,20 +127,10 @@ public class Login extends JFrame implements ActionListener {
             gbInput.setConstraints(btCancel, gbcInput);
             pnInput.add(btCancel);
 
-            ImageIcon carimg = new ImageIcon("car.jpg");
-            JLabel carDis = new JLabel(carimg);
-            gbcInput.gridx = 10;
-            gbcInput.gridy = 10;
-            gbcInput.fill = GridBagConstraints.BOTH;
-            gbcInput.weightx = 1;
-            gbcInput.weighty = 0;
-            gbcInput.anchor = GridBagConstraints.NORTH;
-            pnInput.add(carDis,gbcInput);
-
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
             setContentPane(pnInput);
-            setSize(300, 100);
+            setSize(300, 120);
             setVisible(true);
             setResizable(false);
             setLocationRelativeTo(null);
@@ -151,7 +139,10 @@ public class Login extends JFrame implements ActionListener {
         }
     }// end Login
 
-    //Code for sound was adapted from https://stackoverflow.com/questions/27533617/play-sound-on-button-click
+    /**
+     * Play.
+     */
+//Code for sound was adapted from https://stackoverflow.com/questions/27533617/play-sound-on-button-click
     public void play() {
         try {
             audioInputStream = AudioSystem.getAudioInputStream(defaultSound);
@@ -169,6 +160,9 @@ public class Login extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * Stop.
+     */
     public void stop() {
         clip.stop();
     }

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 /**
  * Created by Nigel Guerin
  */
-
 public class CarSystem extends JFrame implements ActionListener {
     private JPanel pnMain;
     private JPanel pnSidebar;
@@ -33,6 +32,9 @@ public class CarSystem extends JFrame implements ActionListener {
     private JLabel lbMaxPrice;
     private JPanel pnAd;
     private JLabel lbSellcar;
+    private JButton btReset = new JButton("Reset");
+    private JButton btAdd = new JButton("Save");
+    private JPanel pnForButton = new JPanel();
     private Car car;
     private ArrayList<Car> cars = new ArrayList<>();
     private FuelCar Fuelcar;
@@ -45,8 +47,9 @@ public class CarSystem extends JFrame implements ActionListener {
     private ArrayList<Seller> sellers = new ArrayList<>();
     //------------------------------------------------------------------------------
 
+
     /**
-     * Creates components of the GUI
+     * Instantiates a new Car system.
      */
     public CarSystem() {
         super("CarSystem");
@@ -67,12 +70,9 @@ public class CarSystem extends JFrame implements ActionListener {
         //Divides menu panel and input panel
         JSplitPane sppSplit = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT) {
             //Keeps split pane locked to one location
-            private final int location = 100;
-
-            {
+            private final int location = 100;{
                 setDividerLocation(location);
             }
-
             @Override
             public int getDividerLocation() {
                 return location;
@@ -129,9 +129,9 @@ public class CarSystem extends JFrame implements ActionListener {
         pnSidebar.add(this.btRegister);
         sppSplit.setLeftComponent(pnSidebar);
 
-        /*
-            Right panel
-        */
+
+           // Right panel
+
         pnRightpanel = new JPanel();
         GridBagLayout gbRightpanel = new GridBagLayout();
         GridBagConstraints gbcRightpanel = new GridBagConstraints();
@@ -369,8 +369,9 @@ public class CarSystem extends JFrame implements ActionListener {
 
     } // end CarSystem()
 
+
     /**
-     * Used to add a Customer/Seller
+     * Add customer.
      */
     public void addCustomer() {
         String[] customerTypeList = {"Seller", "Buyer"};
@@ -448,97 +449,22 @@ public class CarSystem extends JFrame implements ActionListener {
         this.customers.add(this.customer);
     }
 
+
     /**
-     * Used to add car to sell
+     * Add car sale.
      */
     public void addCarSale() {
+        btReset.addActionListener(this);
+        btAdd.addActionListener(this);
 
-        String[] fuelTypeList = {"Combustion engine", "Electric"};
-        String[] CarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
-
-        boolean valid = false;
-        while (!valid) {
-            try {
-                //Runtime.getRuntime().exec("explorer.exe /select, path");
-                String make = JOptionPane.showInputDialog("Enter the make of the car");
-                if (make.length() > 2 && make.length() < 60) {
-                    String model = JOptionPane.showInputDialog("Enter the model of the car");
-                    if (model.length() >= 1 && model.length() < 60) {
-                        String regno = JOptionPane.showInputDialog("Enter the registration of the car");
-                        String r = regno.toUpperCase();
-                        //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
-                         /*
-                        A regular expression defines a search pattern for strings
-                        The ^ Finds regex that must match at the beginning of the line.
-                        The \d  Any digit, short for [0-9].
-                        The ? Occurs no or one times, ? is short for {0,1}.
-                        The {2,3} Must occur between 2 to 3.
-                        */
-                        if (r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$")) {
-                            double cost = Integer.parseInt(JOptionPane.showInputDialog("Enter the price of the car"));
-                            int year = Integer.parseInt(JOptionPane.showInputDialog("Enter the year of the car"));
-                            if (year == (int) year && (double) cost == cost) {
-                                String type = (String) JOptionPane.showInputDialog(null, "Body type",
-                                        "Body type", JOptionPane.QUESTION_MESSAGE, null, CarBodyTypes, CarBodyTypes[0]);
-
-                                String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
-                                        "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
-
-                                if (fuelType.equals("Combustion engine")) {
-                                    int emissions = Integer.parseInt(JOptionPane.showInputDialog("Enter the emissions of the car"));
-                                    String transmission = JOptionPane.showInputDialog("Enter the transmission type of the car");
-                                    String fuel = JOptionPane.showInputDialog("Enter the fuel type of the car");
-                                    double engineSize = Double.parseDouble(JOptionPane.showInputDialog("Enter the engine size of the car"));
-                                    this.Fuelcar = new FuelCar(emissions, transmission, fuel, engineSize);
-                                    this.car = new Car(make, model, type, regno, year, cost);
-                                    JOptionPane.showMessageDialog(null, car + "\n" + Fuelcar, "Added Car", JOptionPane.INFORMATION_MESSAGE);
-                                    ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("fuel.dat"));
-                                    oosFuelCar.writeObject(this.Fuelcars);
-                                    oosFuelCar.close();
-                                    valid = true;
-
-                                } else if (fuelType.equals("Electric")) {
-                                    int batterySize = Integer.parseInt(JOptionPane.showInputDialog("Enter the battery capacity of the car"));
-                                    String motor = JOptionPane.showInputDialog("Enter the motor type of the car");
-                                    this.Electriccar = new ElectricCar(batterySize, motor);
-                                    this.car = new Car(make, model, type, regno, year, cost);
-                                    JOptionPane.showMessageDialog(null, car + "\n" + Electriccar);
-                                    ObjectOutputStream oosElectric = new ObjectOutputStream(new FileOutputStream("electric.txt"));
-                                    oosElectric.writeObject(this.Electriccar);
-                                    oosElectric.close();
-                                    valid = true;
-                                }
-                            } else {
-                                year = Integer.parseInt(JOptionPane.showInputDialog("Year is invalid. Please re-enter"));
-                            }
-                        } else {
-                            regno = JOptionPane.showInputDialog("Invalid registration. 11(1)-XX-1(1111) Please re-enter");
-
-                        }
-                    } else {
-                        model = JOptionPane.showInputDialog("Invalid model. Please re-enter");
-                    }
-                } else {
-                    make = JOptionPane.showInputDialog("Invalid Make. Please re-enter");
-                }
-            } catch (NullPointerException n) {
-                int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
-                if (choice == 0) {
-                    String make = JOptionPane.showInputDialog("test test test tess");
-                } else {
-                    break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        this.Fuelcars.add(this.Fuelcar);
-        this.ElectricCars.add(this.Electriccar);
-        this.cars.add(this.car);
-
+        pnForButton.add(btAdd);
+        pnForButton.add(btReset);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
     } //end addCarSale
 
+    /**
+     * View cars.
+     */
     public void viewCars() {
         JTextArea taCars = new JTextArea();
         try {
@@ -554,6 +480,7 @@ public class CarSystem extends JFrame implements ActionListener {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void actionPerformed(ActionEvent e) {
         String menu = e.getActionCommand();

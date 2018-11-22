@@ -10,6 +10,7 @@ public class Customer implements Serializable {
     private String email;
 
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "Name: " + name + '\n' +
@@ -17,6 +18,7 @@ public class Customer implements Serializable {
                 "Email: " + email ;
     }
 
+    /** Constructs a new Customer. */
     public Customer(){
         this("Unknown","Unknown","Unknown");
     }
@@ -26,26 +28,56 @@ public class Customer implements Serializable {
         this.email = email;
     }
 
+    /**
+     * Getter for property 'name'.
+     *
+     * @return Value for property 'name'.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for property 'name'.
+     *
+     * @param name Value to set for property 'name'.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for property 'DOB'.
+     *
+     * @return Value for property 'DOB'.
+     */
     public String getDOB() {
         return DOB;
     }
 
+    /**
+     * Setter for property 'DOB'.
+     *
+     * @param DOB Value to set for property 'DOB'.
+     */
     public void setDOB(String DOB) {
         this.DOB = DOB;
     }
 
+    /**
+     * Getter for property 'email'.
+     *
+     * @return Value for property 'email'.
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Setter for property 'email'.
+     *
+     * @param email Value to set for property 'email'.
+     */
     public void setEmail(String email) {
         this.email = email;
     }
