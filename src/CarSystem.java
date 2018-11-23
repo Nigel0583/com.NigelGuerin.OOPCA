@@ -400,78 +400,87 @@ public class CarSystem extends JFrame implements ActionListener {
      */
     public void addCustomer() {
         String[] customerTypeList = {"Seller", "Buyer"};
-        boolean valid = false;
 
-        while (!valid) {
-            try {
-                String name = JOptionPane.showInputDialog("Enter your name");
-                //Regex for name from https://www.regextester.com/93648
-                if (name.matches("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")) {
-                    String DOB = JOptionPane.showInputDialog("Enter your date of birth");
-                    //Regex for DOB https://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
-                    if (DOB.matches("^(?:(?:31([/\\-.])(?:0?[13578]|1[02]))\\1|(?:(?:29|30)([/\\-.])(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^" +
-                            "(?:29([/\\-.])0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^" +
-                            "(?:0?[1-9]|1\\d|2[0-8])([/\\-.])(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$")) {
-                        String email = JOptionPane.showInputDialog("Please enter your email");
-                        //Regex for email https://emailregex.com/
-                        if (email.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:" +
-                                "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" +
-                                "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\" +
-                                "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])")) {
-                            String type = (String) JOptionPane.showInputDialog(null, "Customer type",
-                                    "Customer type", JOptionPane.QUESTION_MESSAGE, null, customerTypeList, customerTypeList[0]);
-                            if (type.equals("Seller")) {
-                                String sellerType = JOptionPane.showInputDialog("Enter seller type");
-                                String phone = JOptionPane.showInputDialog("Enter phone number");
-                                //Regex for phone  from  https://stackoverflow.com/questions/30347086/regex-for-english-and-irish-phone-numbers
-                                if (phone.matches("^\\+(353|44)(\\s*\\d){9,12}$")) {
-                                    this.customer = new Customer(name, DOB, email);
-                                    this.seller = new Seller(phone, sellerType);
-                                    JOptionPane.showMessageDialog(null, customers + "\n" + seller);
-                                    ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
-                                    oosCustomer.writeObject(this.customer);
-                                    oosCustomer.close();
-                                    ObjectOutputStream oosSeller = new ObjectOutputStream(new FileOutputStream("seller.dat"));
-                                    oosSeller.writeObject(this.seller);
-                                    oosSeller.close();
+        try {
 
-                                    valid = true;
-                                } else {
-                                    phone = JOptionPane.showInputDialog("Invalid phone number. +353123456789 Please re-enter");
-                                }
+            String name = JOptionPane.showInputDialog("Enter your name");
 
+            //Regex for name from https://www.regextester.com/93648
+            if (!name.matches("^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$")) {
+                name = JOptionPane.showInputDialog("Invalid. Please re-enter your name");
+            }
+            String DOB = JOptionPane.showInputDialog("Enter your date of birth");
 
-                            } else if (type.equals("Buyer")) {
-                                this.customer = new Customer(name, DOB, email);
+            //Regex for DOB https://stackoverflow.com/questions/15491894/regex-to-validate-date-format-dd-mm-yyyy
+            if (!DOB.matches("^(?:(?:31([/\\-.])(?:0?[13578]|1[02]))\\1|(?:(?:29|30)([/\\-.])(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^" +
+                    "(?:29([/\\-.])0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^" +
+                    "(?:0?[1-9]|1\\d|2[0-8])([/\\-.])(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$")) {
+                DOB = JOptionPane.showInputDialog("Invalid DOB. NN-NN-NNNN Re-enter your date of birth");
+            }
+            String email = JOptionPane.showInputDialog("Enter your email");
 
-                                JOptionPane.showMessageDialog(null, customer);
-                                ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
-                                oosCustomer.writeObject(this.customer);
-                                oosCustomer.close();
-
-                                valid = true;
-                            }
-                        } else {
-                            email = JOptionPane.showInputDialog("Invalid email. Re-enter your date of email");
-                        }
-                    } else {
-                        DOB = JOptionPane.showInputDialog("Invalid DOB. Re-enter your date of birth");
-                    }
-                } else {
-                    name = JOptionPane.showInputDialog("Enter your name");
-                }
-            } catch (NullPointerException n) {
-                int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
-                if (choice == 0) {
-                    String name = JOptionPane.showInputDialog("Enter your name");
-                } else {
-                    break;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            //Regex for email https://emailregex.com/
+            if (!email.matches("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:" +
+                    "(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" +
+                    "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\" +
+                    "[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])")) {
+                email = JOptionPane.showInputDialog("Invalid email. Re-enter your date of email");
             }
 
+            String type = (String) JOptionPane.showInputDialog(null, "Customer type",
+                    "Customer type", JOptionPane.QUESTION_MESSAGE, null, customerTypeList, customerTypeList[0]);
+
+            switch (type) {
+                case "Seller":
+                    String sellerType = JOptionPane.showInputDialog("Enter seller type");
+
+                    if (!sellerType.equals("Private") || !sellerType.equals("Dealership")) {
+                        sellerType = JOptionPane.showInputDialog(" Invalid. Re-enter seller type");
+                    }
+
+                    String phone = JOptionPane.showInputDialog("Enter phone number");
+                    //Regex for phone  from  https://stackoverflow.com/questions/30347086/regex-for-english-and-irish-phone-numbers
+                    if (!phone.matches("^\\+(353|44)(\\s*\\d){9,12}$")) {
+
+                        phone = JOptionPane.showInputDialog("Invalid phone number. +353123456789 Please re-enter");
+
+                    }
+
+                    this.customer = new Customer(name, DOB, email);
+                    this.seller = new Seller(phone, sellerType);
+
+                    JOptionPane.showMessageDialog(null, customer + "\n" + seller);
+
+                    ObjectOutputStream oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
+                    oosCustomer.writeObject(this.customer);
+                    oosCustomer.close();
+                    ObjectOutputStream oosSeller = new ObjectOutputStream(new FileOutputStream("seller.dat"));
+                    oosSeller.writeObject(this.seller);
+                    oosSeller.close();
+
+                    break;
+
+                case "Buyer":
+                    this.customer = new Customer(name, DOB, email);
+
+                    JOptionPane.showMessageDialog(null, customer);
+                    oosCustomer = new ObjectOutputStream(new FileOutputStream("customer.dat"));
+                    oosCustomer.writeObject(this.customer);
+                    oosCustomer.close();
+                    break;
+
+            }
+
+        } catch (NullPointerException n) {
+            int choice = JOptionPane.showConfirmDialog(null, "Do you want to continue?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            if (choice == 0) {
+                String name = JOptionPane.showInputDialog("Enter your name");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+
         this.sellers.add(this.seller);
         this.customers.add(this.customer);
     }
@@ -480,11 +489,10 @@ public class CarSystem extends JFrame implements ActionListener {
     /**
      * Add car sale.
      */
-    public void addCarSale()  {
+    public void addCarSale() {
 
         btResetG.addActionListener(this);
         btAddG.addActionListener(this);
-
 
 
         String[] dataCarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
@@ -572,18 +580,76 @@ public class CarSystem extends JFrame implements ActionListener {
 
 
     public void addCar() {
+
         String make = tfMakeG.getText();
-        String model  = tfModelG.getText();
+        String model = tfModelG.getText();
         String type = Objects.requireNonNull(cmbCarBodyTypes.getSelectedItem()).toString();
         String regno = tfRegNoG.getText();
+        String r = regno.toUpperCase();
         String year = tfYearG.getText();
         int years = Integer.parseInt(year);
         String cost = tfCostG.getText();
         double costs = Integer.parseInt(cost);
-        this.car = new Car(make,model,type,regno,years,costs);
-        JOptionPane.showMessageDialog(null, car , "Added Car", JOptionPane.INFORMATION_MESSAGE);
+        boolean valid = false;
+        try {
+            if (validateString(make)) {
+                if (years >= 1900 && years <= 9999) {
+                    //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
+                     /*
+                        A regular expression defines a search pattern for strings
+                        The ^ Finds regex that must match at the beginning of the line.
+                        The \d  Any digit, short for [0-9].
+                        The ? Occurs no or one times, ? is short for {0,1}.
+                        The {2,3} Must occur between 2 to 3.
+                        If a dollar sign ( $ ) is at the end of the entire regular expression, it matches the end of a line. If an entire regular expression is enclosed by a
+                        caret and dollar sign ( ^like this$ ), it matches an entire line. So, to match all strings containing just one characters, use " ^.$ "
+                        */
+                    if ((r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$"))) {
+                        if (costs >= 100) {
+                            valid = true;
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid registration. 11(1)-XX-1(1111) Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Year. Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Invalid Make. Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (NumberFormatException n) {
+            JOptionPane.showMessageDialog(null, "An Error has occurred", "Invalid", JOptionPane.ERROR_MESSAGE);
+        }
+        if (valid) {
+            Car newCar = new Car(make, model, type, regno, years, costs);
+            newCar.setMake(make);
+            newCar.setModel(model);
+            newCar.setType(type);
+            newCar.setRegno(regno);
+            newCar.setYear(years);
+            newCar.setCost(costs);
+
+        }
+        this.cars.add(this.car);
     }
-    
+
+    private boolean validateString(String arg) {
+        boolean valid = false;
+        String[] split = arg.split(" ");
+
+        for (String aSplit : split) {
+            // This checks if the number of characters between a space is greater than 2
+            valid = (aSplit.length() > 2);
+            if (valid) {
+                break;
+            }
+        }
+        return valid;
+    }
+
     public void resetbutton() {
         tfMakeG.setText("");
         tfModelG.setText("");
@@ -591,7 +657,6 @@ public class CarSystem extends JFrame implements ActionListener {
         tfCostG.setText("");
         tfYearG.setText("");
     }
-
 
     /**
      * View cars.
@@ -611,25 +676,22 @@ public class CarSystem extends JFrame implements ActionListener {
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
     @Override
     public void actionPerformed(ActionEvent e) {
         String menu = e.getActionCommand();
-        if ( btSellCar.getName().equals( ( (Component)e.getSource() ).getName())) {
+        if (btSellCar.getName().equals(((Component) e.getSource()).getName())) {
             addCarSale();
         } else if (menu.equals("Register") || e.getSource() == btRegister) {
             addCustomer();
         } else if ((menu.equals("View car")) || e.getSource() == btViewCars) {
             viewCars();
-        } else if ( e.getSource() == btAddG) {
+        } else if (e.getSource() == btAddG) {
             addCar();
         } else if (e.getSource() == btResetG) {
             resetbutton();
         }
-
-
     }// end actionPerformed
 } // end class CarSystem
