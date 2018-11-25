@@ -2,9 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,6 +15,7 @@ public class CarSystem extends JFrame implements ActionListener {
     private JButton btViewCars;
     private JButton btSellCar;
     private JButton btRegister;
+    private JButton btViewDetails;
     private JPanel pnRightpanel;
     private JPanel pnSearchCars;
     private JLabel lbMake;
@@ -46,7 +45,8 @@ public class CarSystem extends JFrame implements ActionListener {
     private ArrayList<Seller> sellers = new ArrayList<>();
     private JButton btResetG = new JButton("Reset");
     private JButton btAddG = new JButton("Sell Car");
-    private JFrame frameG = new JFrame("Add Car sale");
+    private JFrame frameF = new JFrame("Add Car sale");
+    private JFrame frameE = new JFrame("Add Car sale");
     private JLabel lbMakeG = new JLabel("Make");
     private JLabel lbModelG = new JLabel("Model");
     private JLabel lbTypeG = new JLabel("Type");
@@ -70,6 +70,8 @@ public class CarSystem extends JFrame implements ActionListener {
     private JTextField tfBatteryG = new JTextField(10);
     private JTextField tfMotorG = new JTextField(10);
     private JComboBox cmbCarBodyTypes;
+    private JComboBox cmbTransmission;
+    private JComboBox cmbFuel;
     //------------------------------------------------------------------------------
 
     /**
@@ -133,14 +135,16 @@ public class CarSystem extends JFrame implements ActionListener {
         pnSidebar.add(this.btViewCars);
 
 
-       /* gbcSidebar.gridy = 3;
+        this.btViewDetails = new JButton("View Details");
+        this.btViewDetails.addActionListener(this);
+        gbcSidebar.gridy = 3;
         gbcSidebar.gridwidth = 1;
         gbcSidebar.gridheight = 1;
         gbcSidebar.fill = GridBagConstraints.BOTH;
         gbcSidebar.weightx = 1;
         gbcSidebar.anchor = GridBagConstraints.NORTH;
-        gbSidebar.setConstraints(btSellCar, gbcSidebar);
-        pnSidebar.add(this.btSellCar);*/
+        gbSidebar.setConstraints(btViewDetails, gbcSidebar);
+        pnSidebar.add(this.btViewDetails);
 
         this.btRegister = new JButton("Add Details");
         this.btRegister.addActionListener(this);
@@ -434,7 +438,7 @@ public class CarSystem extends JFrame implements ActionListener {
                 case "Seller":
                     String sellerType = JOptionPane.showInputDialog("Enter seller type");
 
-                    if (!sellerType.equals("Private") || !sellerType.equals("Dealership")) {
+                    if (!(sellerType.equals("Private") || !sellerType.equals("Dealership"))) {
                         sellerType = JOptionPane.showInputDialog(" Invalid. Re-enter seller type");
                     }
 
@@ -457,6 +461,9 @@ public class CarSystem extends JFrame implements ActionListener {
                     ObjectOutputStream oosSeller = new ObjectOutputStream(new FileOutputStream("seller.dat"));
                     oosSeller.writeObject(this.seller);
                     oosSeller.close();
+                    //Code to join files is from https://stackoverflow.com/questions/14673063/merging-file-in-java
+                    IOCopier.joinFiles(new File("sellerDetails.dat"), new File[]{
+                            new File("customer.dat"), new File("seller.dat")});
 
                     break;
 
@@ -490,7 +497,21 @@ public class CarSystem extends JFrame implements ActionListener {
      * Add car sale.
      */
     public void addCarSale() {
+        String[] fuelTypeList = {"Combustion engine", "Electric"};
+        String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
 
+        if (fuelType.equals("Combustion engine")) {
+            choseFuel();
+        } else if (fuelType.equals("Electric")) {
+            choseElectric();
+        }
+        frameF.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+
+    } //end addCarSale
+
+    public void choseFuel() {
         btResetG.addActionListener(this);
         btAddG.addActionListener(this);
 
@@ -498,25 +519,19 @@ public class CarSystem extends JFrame implements ActionListener {
         String[] dataCarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
         cmbCarBodyTypes = new JComboBox(dataCarBodyTypes);
 
-        Container container = frameG.getContentPane();
+        String[] dataTansmission = {"Manual", "Automatic"};
+        cmbTransmission = new JComboBox(dataTansmission);
+
+        String[] dataFuel = {"Petrol", "Diesel", "Hybrid", "LPG"};
+        cmbFuel = new JComboBox(dataFuel);
+
+        Container container = frameF.getContentPane();
         GroupLayout addSaleLayout = new GroupLayout(container);
         container.setLayout(addSaleLayout);
 
-        try {
-            frameG.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
-        } catch (Exception x) {
-
-        }
-        frameG.setVisible(true);
-        frameG.setLocationRelativeTo(null);
-
-
-        addSaleLayout.setAutoCreateContainerGaps(true);
-        addSaleLayout.setAutoCreateGaps(true);
-        addSaleLayout.preferredLayoutSize(container);
-
-       /* String[] dataFuelType = {"Combustion engine", "Electric"};
-        cmbFuelType = new JComboBox(dataFuelType);*/
+        frameF.setVisible(true);
+        frameF.setLocationRelativeTo(null);
+        frameF.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         addSaleLayout.setHorizontalGroup(
                 addSaleLayout.createSequentialGroup()
@@ -527,6 +542,10 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(lbRegnoG)
                                 .addComponent(lbCostG)
                                 .addComponent(lbYearG)
+                                .addComponent(lbFuel)
+                                .addComponent(lbTransmission)
+                                .addComponent(lbEmissions)
+                                .addComponent(lbEngine)
                         )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                                 .addComponent(tfMakeG)
@@ -535,6 +554,10 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(tfRegNoG)
                                 .addComponent(tfCostG)
                                 .addComponent(tfYearG)
+                                .addComponent(cmbFuel)
+                                .addComponent(cmbTransmission)
+                                .addComponent(tfEmmissionsG)
+                                .addComponent(tfEngineG)
                                 .addGroup(addSaleLayout.createSequentialGroup()
                                         .addComponent(btResetG)
                                         .addComponent(btAddG)
@@ -569,15 +592,128 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(tfYearG)
                         )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbFuel)
+                                .addComponent(cmbFuel)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbTransmission)
+                                .addComponent(cmbTransmission)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbEmissions)
+                                .addComponent(tfEmmissionsG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbEngine)
+                                .addComponent(tfEngineG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(btResetG)
                                 .addComponent(btAddG)
 
                         )
         );
-        frameG.setResizable(false);
-        frameG.pack();
-    } //end addCarSale
+        frameF.setResizable(false);
+        frameF.pack();
 
+
+    }
+
+    public void choseElectric() {
+        btResetG.addActionListener(this);
+        btAddG.addActionListener(this);
+
+
+        String[] dataCarBodyTypes = {"Cabriolet", "Commercial", "Coupe", "Estate", "Hatchback", "Saloon", "SUV"};
+        cmbCarBodyTypes = new JComboBox(dataCarBodyTypes);
+
+
+        Container container = frameE.getContentPane();
+        GroupLayout addSaleLayout = new GroupLayout(container);
+        container.setLayout(addSaleLayout);
+
+        try {
+            frameE.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+        } catch (Exception x) {
+
+        }
+        frameE.setVisible(true);
+        frameE.setLocationRelativeTo(null);
+        frameE.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+        addSaleLayout.setAutoCreateContainerGaps(true);
+        addSaleLayout.setAutoCreateGaps(true);
+        addSaleLayout.preferredLayoutSize(container);
+        addSaleLayout.setHorizontalGroup(
+                addSaleLayout.createSequentialGroup()
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(lbMakeG)
+                                .addComponent(lbModelG)
+                                .addComponent(lbTypeG)
+                                .addComponent(lbRegnoG)
+                                .addComponent(lbCostG)
+                                .addComponent(lbYearG)
+                                .addComponent(lbBattery)
+                                .addComponent(lbMotor)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                                .addComponent(tfMakeG)
+                                .addComponent(tfModelG)
+                                .addComponent(cmbCarBodyTypes)
+                                .addComponent(tfRegNoG)
+                                .addComponent(tfCostG)
+                                .addComponent(tfYearG)
+                                .addComponent(tfBatteryG)
+                                .addComponent(tfMotorG)
+                                .addGroup(addSaleLayout.createSequentialGroup()
+                                        .addComponent(btResetG)
+                                        .addComponent(btAddG)
+                                )
+                        )
+        );
+        addSaleLayout.setVerticalGroup(
+                addSaleLayout.createSequentialGroup()
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbMakeG)
+                                .addComponent(tfMakeG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbModelG)
+                                .addComponent(tfModelG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbTypeG)
+                                .addComponent(cmbCarBodyTypes)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbRegnoG)
+                                .addComponent(tfRegNoG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbCostG)
+                                .addComponent(tfCostG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbYearG)
+                                .addComponent(tfYearG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbBattery)
+                                .addComponent(tfBatteryG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(lbMotor)
+                                .addComponent(tfMotorG)
+                        )
+                        .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                .addComponent(btResetG)
+                                .addComponent(btAddG)
+
+                        )
+        );
+        frameE.setResizable(false);
+        frameE.pack();
+    }
 
     public void addCar() {
 
@@ -590,6 +726,12 @@ public class CarSystem extends JFrame implements ActionListener {
         int years = Integer.parseInt(year);
         String cost = tfCostG.getText();
         double costs = Integer.parseInt(cost);
+        String fuel = tfFuelG.getText();
+        String engineSize = tfEngineG.getText();
+        String transmission = String.valueOf(cmbTransmission.getSelectedItem());
+        int batterySize = Integer.parseInt(tfBatteryG.getText());
+        String motor = tfMotorG.getText();
+
         boolean valid = false;
         try {
             if (validateString(make)) {
@@ -604,7 +746,7 @@ public class CarSystem extends JFrame implements ActionListener {
                         If a dollar sign ( $ ) is at the end of the entire regular expression, it matches the end of a line. If an entire regular expression is enclosed by a
                         caret and dollar sign ( ^like this$ ), it matches an entire line. So, to match all strings containing just one characters, use " ^.$ "
                         */
-                    if ((r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,4})$"))) {
+                    if ((r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,6})$"))) {
                         if (costs >= 100) {
                             valid = true;
                         }
@@ -621,19 +763,23 @@ public class CarSystem extends JFrame implements ActionListener {
             }
 
         } catch (NumberFormatException n) {
-            JOptionPane.showMessageDialog(null, "An Error has occurred", "Invalid", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        this.car = new Car(make, model, type, r, years, costs);
+        this.cars.add(this.car);
         if (valid) {
-            Car newCar = new Car(make, model, type, regno, years, costs);
-            newCar.setMake(make);
-            newCar.setModel(model);
-            newCar.setType(type);
-            newCar.setRegno(regno);
-            newCar.setYear(years);
-            newCar.setCost(costs);
+            try {
+                ObjectOutputStream oosCar = new ObjectOutputStream(new FileOutputStream("car.dat"));
+                oosCar.writeObject(cars);
+                oosCar.flush();
+                frameF.dispose();
+                JOptionPane.showMessageDialog(null, "The car has been successfully added", "Added", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
+            }
 
         }
-        this.cars.add(this.car);
+
     }
 
     private boolean validateString(String arg) {
@@ -650,7 +796,7 @@ public class CarSystem extends JFrame implements ActionListener {
         return valid;
     }
 
-    public void resetbutton() {
+    public void resetButton() {
         tfMakeG.setText("");
         tfModelG.setText("");
         tfRegNoG.setText("");
@@ -662,17 +808,43 @@ public class CarSystem extends JFrame implements ActionListener {
      * View cars.
      */
     public void viewCars() {
-        JTextArea taCars = new JTextArea();
+
         try {
-            for (Car car1 : this.cars) {
-                this.car = car1;
-                taCars.append(this.car + "\n");
+            ObjectInputStream oisCar = new ObjectInputStream(new FileInputStream("car.dat"));
+            this.cars = (ArrayList) oisCar.readObject();
+            JFrame frameC = new JFrame("Car available");
 
+            //frameC.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+
+            frameC.setSize(200, 250);
+            frameC.setResizable(false);
+            JTextArea taCars = new JTextArea();
+            taCars.setSize(170, 220);
+            taCars.setLineWrap(true);
+            taCars.setEditable(false);
+            taCars.setVisible(true);
+            StringBuilder textCar = new StringBuilder();
+            if (this.cars.size() < 1) {
+                JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                for (Car car1 : this.cars) {
+                    textCar.append(car1.toString());
+                }
+                taCars.append(textCar.toString());
+                JScrollPane scView = new JScrollPane(taCars);
+                scView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                scView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+                frameC.setLocationRelativeTo(null);
+                frameC.setResizable(false);
+                frameC.add(scView);
+                frameC.setVisible(true);
             }
-            JOptionPane.showMessageDialog(null, taCars, "Cars for sale", JOptionPane.PLAIN_MESSAGE);
 
-        } catch (NullPointerException n) {
-            JOptionPane.showMessageDialog(null, "No cars found", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException f) {
+            JOptionPane.showMessageDialog(null, "An Error has occurred. Unable to load file", "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -686,12 +858,45 @@ public class CarSystem extends JFrame implements ActionListener {
             addCarSale();
         } else if (menu.equals("Register") || e.getSource() == btRegister) {
             addCustomer();
-        } else if ((menu.equals("View car")) || e.getSource() == btViewCars) {
+        } else if (e.getSource() == btViewCars) {
             viewCars();
         } else if (e.getSource() == btAddG) {
             addCar();
         } else if (e.getSource() == btResetG) {
-            resetbutton();
+            resetButton();
         }
     }// end actionPerformed
+
 } // end class CarSystem
+
+//From https://stackoverflow.com/questions/14673063/merging-file-in-java
+class IOCopier {
+    public static void joinFiles(File destination, File[] sources)
+            throws IOException {
+        OutputStream output = null;
+        try {
+            output = createAppendableStream(destination);
+            for (File source : sources) {
+                appendFile(output, source);
+            }
+        } finally {
+            IOUtils.closeQuietly(output);
+        }
+    }
+
+    private static BufferedOutputStream createAppendableStream(File destination)
+            throws FileNotFoundException {
+        return new BufferedOutputStream(new FileOutputStream(destination, true));
+    }
+
+    private static void appendFile(OutputStream output, File source)
+            throws IOException {
+        InputStream input = null;
+        try {
+            input = new BufferedInputStream(new FileInputStream(source));
+            IOUtils.copy(input, output);
+        } finally {
+            IOUtils.closeQuietly(input);
+        }
+    }
+}//end IOCopier

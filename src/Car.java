@@ -16,7 +16,7 @@ public class Car implements Serializable {
      * Instantiates a new Car.
      */
     public Car() {
-        this("Unknown", "Unknown", "Unknown", "Unknown", 0,0.0);
+        this("Unknown", "Unknown", "Unknown", "Unknown", 0, 0.0);
     }
 
     /**
@@ -29,14 +29,13 @@ public class Car implements Serializable {
      * @param year  the year
      * @param cost  the cost
      */
-    public Car(String make , String model , String type, String regno, int year,double cost) {
+    public Car(String make, String model, String type, String regno, int year, double cost) {
         this.model = model;
         this.make = make;
         this.type = type;
         this.year = year;
         Regno = regno;
         this.cost = cost;
-
     }
 
     @Override
@@ -46,7 +45,7 @@ public class Car implements Serializable {
                 "Type: " + type + '\n' +
                 "Year: " + year + '\n' +
                 "Registration: " + Regno + '\n' +
-                "Cost: €" +cost +"\n\n";
+                "Cost: €" + cost + "\n\n";
     }
 
     /**

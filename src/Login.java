@@ -3,7 +3,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,7 +21,6 @@ public class Login extends JFrame implements ActionListener {
     JLabel lbPass;
     JButton btLogin;
     JButton btCancel;
-    File wavFile;
     URL defaultSound;
     public static Clip clip;
     public static AudioInputStream audioInputStream;
@@ -32,11 +30,9 @@ public class Login extends JFrame implements ActionListener {
     /**
      * Instantiates a new Login.
      *  @param url the url
-     * @param f
-     * @param s
-     * @param s1
+
      */
-    public Login(String url, String f, String s, String s1) {
+    public Login(String url) {
         try {
             setTitle("Enter Details");
             try {
