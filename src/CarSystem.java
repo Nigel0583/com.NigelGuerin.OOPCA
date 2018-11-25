@@ -9,6 +9,7 @@ import java.util.Objects;
 /**
  * Created by Nigel Guerin
  */
+
 public class CarSystem extends JFrame implements ActionListener {
     private JPanel pnMain;
     private JPanel pnSidebar;
@@ -16,21 +17,18 @@ public class CarSystem extends JFrame implements ActionListener {
     private JButton btSellCar;
     private JButton btRegister;
     private JButton btViewDetails;
+    private JButton btDelete;
     private JPanel pnRightpanel;
     private JPanel pnSearchCars;
     private JLabel lbMake;
     private JTextField tfMake;
     private JTextField tfModel;
-    private JComboBox cmbMinYear;
     private JComboBox cmbMaxYear;
     private JTextField tfMinPrice;
-    private JTextField tfMaxPrice;
     private JButton btSearch;
     private JLabel lbModel;
     private JLabel lbMinYear;
-    private JLabel lbMaxYear;
     private JLabel lbMinPrice;
-    private JLabel lbMaxPrice;
     private JPanel pnAd;
     private JLabel lbSellcar;
     private Car car;
@@ -64,7 +62,7 @@ public class CarSystem extends JFrame implements ActionListener {
     private JTextField tfRegNoG = new JTextField(10);
     private JTextField tfCostG = new JTextField(10);
     private JTextField tfYearG = new JTextField(10);
-    private JTextField tfEmmissionsG = new JTextField(10);
+    private JTextField tfEmissionsG = new JTextField(10);
     private JTextField tfFuelG = new JTextField(10);
     private JTextField tfEngineG = new JTextField(10);
     private JTextField tfBatteryG = new JTextField(10);
@@ -72,6 +70,21 @@ public class CarSystem extends JFrame implements ActionListener {
     private JComboBox cmbCarBodyTypes;
     private JComboBox cmbTransmission;
     private JComboBox cmbFuel;
+    private String fuelType;
+    String motor = "";
+    int battery = 0;
+    int emissions = 0;
+    double engine = 0;
+    String make = "";
+    int year = 0;
+    String model = "";
+    String type = "";
+    String transmission = "";
+    String fueltype = "";
+    double cost = 0.0;
+    String regno = "";
+    String r;
+
     //------------------------------------------------------------------------------
 
     /**
@@ -159,6 +172,20 @@ public class CarSystem extends JFrame implements ActionListener {
         pnSidebar.add(this.btRegister);
         sppSplit.setLeftComponent(pnSidebar);
 
+        this.btDelete = new JButton("Delete Details");
+        this.btDelete.addActionListener(this);
+        this.btDelete.setToolTipText("Delete details");
+        gbcSidebar.gridy = 4;
+        gbcSidebar.gridwidth = 1;
+        gbcSidebar.gridheight = 1;
+        gbcSidebar.fill = GridBagConstraints.BOTH;
+        gbcSidebar.weightx = 1;
+        gbcSidebar.anchor = GridBagConstraints.NORTH;
+        gbSidebar.setConstraints(btDelete, gbcSidebar);
+        pnSidebar.add(this.btDelete);
+        sppSplit.setLeftComponent(pnSidebar);
+
+
         // Right panel
 
         pnRightpanel = new JPanel();
@@ -166,11 +193,13 @@ public class CarSystem extends JFrame implements ActionListener {
         GridBagConstraints gbcRightpanel = new GridBagConstraints();
         pnRightpanel.setLayout(gbRightpanel);
 
+
         pnSearchCars = new JPanel();
         pnSearchCars.setBorder(BorderFactory.createTitledBorder("Search For A Car"));
         GridBagLayout gbSearchCars = new GridBagLayout();
         GridBagConstraints gbcSearchCars = new GridBagConstraints();
         pnSearchCars.setLayout(gbSearchCars);
+
 
         lbMake = new JLabel("Make");
         gbcSearchCars.gridwidth = 1;
@@ -202,28 +231,12 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSearchCars.setConstraints(tfModel, gbcSearchCars);
         pnSearchCars.add(tfModel);
 
-        String[] dataMinYear = {"2000", "2001", "2002", "2003", "2004", "2005", "2006",
-                "2007", "2008", "2009", "2010", "2011", "2012", "131",
-                "132", "141", "142", "151", "152", "161", "162", "171",
-                "172", "181", "182"};
-        cmbMinYear = new JComboBox(dataMinYear);
-        gbcSearchCars.gridx = 1;
-        gbcSearchCars.gridy = 2;
-        gbcSearchCars.gridwidth = 1;
-        gbcSearchCars.gridheight = 1;
-        gbcSearchCars.fill = GridBagConstraints.BOTH;
-        gbcSearchCars.weightx = 1;
-        gbcSearchCars.anchor = GridBagConstraints.NORTH;
-        gbSearchCars.setConstraints(cmbMinYear, gbcSearchCars);
-        pnSearchCars.add(cmbMinYear);
-
-        String[] dataMaxYear = {"182", "181", "172", "171", "162", "161", "152", "151",
-                "142", "141", "132", "131", "2012", "2011", "2010",
-                "2009", "2008", "2007", "2006", "2005", "2004", "2003",
-                "2002", "2001", "2000"};
+        String[] dataMaxYear = {"2018", "2017", "2016", "2015", "2014",
+                "2013", "2012", "2011", "2010", "2009", "2008", "2007",
+                "2006", "2005", "2004", "2003", "2002", "2001", "2000"};
         cmbMaxYear = new JComboBox(dataMaxYear);
         gbcSearchCars.gridx = 1;
-        gbcSearchCars.gridy = 3;
+        gbcSearchCars.gridy = 2;
         gbcSearchCars.gridwidth = 1;
         gbcSearchCars.gridheight = 1;
         gbcSearchCars.fill = GridBagConstraints.BOTH;
@@ -243,18 +256,8 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSearchCars.setConstraints(tfMinPrice, gbcSearchCars);
         pnSearchCars.add(tfMinPrice);
 
-        tfMaxPrice = new JTextField();
-        gbcSearchCars.gridx = 1;
-        gbcSearchCars.gridy = 5;
-        gbcSearchCars.gridwidth = 1;
-        gbcSearchCars.gridheight = 1;
-        gbcSearchCars.fill = GridBagConstraints.BOTH;
-        gbcSearchCars.weightx = 1;
-        gbcSearchCars.anchor = GridBagConstraints.NORTH;
-        gbSearchCars.setConstraints(tfMaxPrice, gbcSearchCars);
-        pnSearchCars.add(tfMaxPrice);
-
-        btSearch = new JButton("Search");
+        this.btSearch = new JButton("Search");
+        this.btSearch.addActionListener(this);
         gbcSearchCars.gridx = 1;
         gbcSearchCars.gridy = 6;
         gbcSearchCars.gridwidth = 1;
@@ -263,7 +266,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbcSearchCars.weightx = 1;
         gbcSearchCars.anchor = GridBagConstraints.NORTH;
         gbSearchCars.setConstraints(btSearch, gbcSearchCars);
-        pnSearchCars.add(btSearch);
+        pnSearchCars.add(this.btSearch);
 
         lbModel = new JLabel("Model");
         gbcSearchCars.gridx = 0;
@@ -277,7 +280,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSearchCars.setConstraints(lbModel, gbcSearchCars);
         pnSearchCars.add(lbModel);
 
-        lbMinYear = new JLabel("Min Year");
+        lbMinYear = new JLabel(" Year");
         gbcSearchCars.gridx = 0;
         gbcSearchCars.gridy = 2;
         gbcSearchCars.gridwidth = 1;
@@ -289,19 +292,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSearchCars.setConstraints(lbMinYear, gbcSearchCars);
         pnSearchCars.add(lbMinYear);
 
-        lbMaxYear = new JLabel("Max Year");
-        gbcSearchCars.gridx = 0;
-        gbcSearchCars.gridy = 3;
-        gbcSearchCars.gridwidth = 1;
-        gbcSearchCars.gridheight = 1;
-        gbcSearchCars.fill = GridBagConstraints.BOTH;
-        gbcSearchCars.weightx = 1;
-        gbcSearchCars.weighty = 1;
-        gbcSearchCars.anchor = GridBagConstraints.NORTH;
-        gbSearchCars.setConstraints(lbMaxYear, gbcSearchCars);
-        pnSearchCars.add(lbMaxYear);
-
-        lbMinPrice = new JLabel("Min Price");
+        lbMinPrice = new JLabel(" Price");
         gbcSearchCars.gridx = 0;
         gbcSearchCars.gridy = 4;
         gbcSearchCars.gridwidth = 1;
@@ -313,17 +304,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbSearchCars.setConstraints(lbMinPrice, gbcSearchCars);
         pnSearchCars.add(lbMinPrice);
 
-        lbMaxPrice = new JLabel("Max Price");
-        gbcSearchCars.gridx = 0;
-        gbcSearchCars.gridy = 5;
-        gbcSearchCars.gridwidth = 1;
-        gbcSearchCars.gridheight = 1;
-        gbcSearchCars.fill = GridBagConstraints.BOTH;
-        gbcSearchCars.weightx = 1;
-        gbcSearchCars.weighty = 1;
-        gbcSearchCars.anchor = GridBagConstraints.NORTH;
-        gbSearchCars.setConstraints(lbMaxPrice, gbcSearchCars);
-        pnSearchCars.add(lbMaxPrice);
+
         gbcRightpanel.gridx = 0;
         gbcRightpanel.gridy = 0;
         gbcRightpanel.gridwidth = 8;
@@ -387,6 +368,7 @@ public class CarSystem extends JFrame implements ActionListener {
         gbcMain.anchor = GridBagConstraints.NORTH;
         gbMain.setConstraints(sppSplit, gbcMain);
         pnMain.add(sppSplit);
+
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -461,9 +443,6 @@ public class CarSystem extends JFrame implements ActionListener {
                     ObjectOutputStream oosSeller = new ObjectOutputStream(new FileOutputStream("seller.dat"));
                     oosSeller.writeObject(this.seller);
                     oosSeller.close();
-                    //Code to join files is from https://stackoverflow.com/questions/14673063/merging-file-in-java
-                    IOCopier.joinFiles(new File("sellerDetails.dat"), new File[]{
-                            new File("customer.dat"), new File("seller.dat")});
 
                     break;
 
@@ -497,21 +476,25 @@ public class CarSystem extends JFrame implements ActionListener {
      * Add car sale.
      */
     public void addCarSale() {
-        String[] fuelTypeList = {"Combustion engine", "Electric"};
-        String fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
-                "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
+        try {
 
-        if (fuelType.equals("Combustion engine")) {
-            choseFuel();
-        } else if (fuelType.equals("Electric")) {
-            choseElectric();
+
+            String[] fuelTypeList = {"Combustion engine", "Electric"};
+            fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                    "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, fuelTypeList, fuelTypeList[0]);
+
+            if (fuelType.equals("Combustion engine")) {
+                choseFuel();
+            }
+            if (fuelType.equals("Electric")) {
+                choseElectric();
+            }
+        } catch (NullPointerException n) {
+
         }
-        frameF.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-
     } //end addCarSale
 
-    public void choseFuel() {
+    private void choseFuel() {
         btResetG.addActionListener(this);
         btAddG.addActionListener(this);
 
@@ -556,7 +539,7 @@ public class CarSystem extends JFrame implements ActionListener {
                                 .addComponent(tfYearG)
                                 .addComponent(cmbFuel)
                                 .addComponent(cmbTransmission)
-                                .addComponent(tfEmmissionsG)
+                                .addComponent(tfEmissionsG)
                                 .addComponent(tfEngineG)
                                 .addGroup(addSaleLayout.createSequentialGroup()
                                         .addComponent(btResetG)
@@ -601,7 +584,7 @@ public class CarSystem extends JFrame implements ActionListener {
                         )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lbEmissions)
-                                .addComponent(tfEmmissionsG)
+                                .addComponent(tfEmissionsG)
                         )
                         .addGroup(addSaleLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                 .addComponent(lbEngine)
@@ -619,7 +602,7 @@ public class CarSystem extends JFrame implements ActionListener {
 
     }
 
-    public void choseElectric() {
+    private void choseElectric() {
         btResetG.addActionListener(this);
         btAddG.addActionListener(this);
 
@@ -715,28 +698,137 @@ public class CarSystem extends JFrame implements ActionListener {
         frameE.pack();
     }
 
+    /**
+     * Display car details.
+     *
+     * @param c the c
+     */
+    public void displayCarDetails(Car c) {
+        tfMakeG.setText(c.getMake());
+        tfModelG.setText(c.getModel());
+        tfRegNoG.setText(c.getRegno());
+        tfCostG.setText(Double.toString(c.getCost()));
+        tfYearG.setText(Integer.toString(c.getYear()));
+    }
+
+    /**
+     * Display electric details.
+     *
+     * @param ec the ec
+     */
+    public void displayElectricDetails(ElectricCar ec) {
+        tfMotorG.setText(ec.getMotor());
+        tfBatteryG.setText(ec.getMotor());
+    }
+
+    /**
+     * Display fuel details.
+     *
+     * @param fc the fc
+     */
+    public void displayFuelDetails(FuelCar fc) {
+        tfEmissionsG.setText(Integer.toString(fc.getEmissions()));
+        tfEngineG.setText(Double.toString(fc.getEngineSize()));
+
+    }
+
+    /**
+     * Gets motor.
+     *
+     * @return the motor
+     */
+    public String getMotor() {
+        return tfMotorG.getText();
+    }
+
+    /**
+     * Gets battery.
+     *
+     * @return the battery
+     */
+    public String getBattery() {
+        return tfBatteryG.getText();
+    }
+
+    /**
+     * Gets emissions.
+     *
+     * @return the emissions
+     */
+    public String getEmissions() {
+        return tfEmissionsG.getText();
+    }
+
+    /**
+     * Gets engine.
+     *
+     * @return the engine
+     */
+    public String getEngine() {
+        return tfEngineG.getText();
+    }
+
+    /**
+     * Gets make.
+     *
+     * @return the make
+     */
+    public String getMake() {
+        return tfMakeG.getText();
+    }
+
+    /**
+     * Gets model.
+     *
+     * @return the model
+     */
+    public String getModel() {
+        return tfModelG.getText();
+    }
+
+    /**
+     * Gets regno.
+     *
+     * @return the regno
+     */
+    public String getRegno() {
+        return tfRegNoG.getText();
+    }
+
+    /**
+     * Gets cost.
+     *
+     * @return the cost
+     */
+    public String getCost() {
+        return tfCostG.getText();
+    }
+
+    /**
+     * Gets year.
+     *
+     * @return the year
+     */
+    public String getYear() {
+        return tfYearG.getText();
+    }
+
+    /**
+     * Add car.
+     */
     public void addCar() {
-
-        String make = tfMakeG.getText();
-        String model = tfModelG.getText();
-        String type = Objects.requireNonNull(cmbCarBodyTypes.getSelectedItem()).toString();
-        String regno = tfRegNoG.getText();
-        String r = regno.toUpperCase();
-        String year = tfYearG.getText();
-        int years = Integer.parseInt(year);
-        String cost = tfCostG.getText();
-        double costs = Integer.parseInt(cost);
-        String fuel = tfFuelG.getText();
-        String engineSize = tfEngineG.getText();
-        String transmission = String.valueOf(cmbTransmission.getSelectedItem());
-        int batterySize = Integer.parseInt(tfBatteryG.getText());
-        String motor = tfMotorG.getText();
-
-        boolean valid = false;
+        r = regno.toUpperCase();
         try {
+            make = getMake().trim();
+            model = getModel().trim();
+            year = Integer.parseInt(getYear().trim());
+            cost = Double.parseDouble(getCost().trim());
+            regno = getRegno().trim();
+            r = regno.toUpperCase();
+            type = Objects.requireNonNull(cmbCarBodyTypes.getSelectedItem()).toString();
+
             if (validateString(make)) {
-                if (years >= 1900 && years <= 9999) {
-                    //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
+                //Regex validation adapted from https://stackoverflow.com/questions/20070387/java-regex-pattern-matching-irish-car-registration
                      /*
                         A regular expression defines a search pattern for strings
                         The ^ Finds regex that must match at the beginning of the line.
@@ -746,16 +838,69 @@ public class CarSystem extends JFrame implements ActionListener {
                         If a dollar sign ( $ ) is at the end of the entire regular expression, it matches the end of a line. If an entire regular expression is enclosed by a
                         caret and dollar sign ( ^like this$ ), it matches an entire line. So, to match all strings containing just one characters, use " ^.$ "
                         */
-                    if ((r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,6})$"))) {
-                        if (costs >= 100) {
-                            valid = true;
+                if ((r.matches("^(\\d{2,3}-?(KK|WW|C|CE|CN|CW|D|DL|G|KE|KY|L|LD|LH|LK|LM|LS|MH|MN|MO|OY|SO|RN|TN|TS|W|WD|WH|WX)-?\\d{1,6})$"))) {
+                    if (year >= 1900 && year <= 9999) {
+                        if (cost >= 100) {
+
+                            if (fuelType.equals("Electric")) {
+                                motor = getMotor().trim();
+                                battery = Integer.parseInt(getBattery().trim());
+                                this.car = new Car(make, model, type, r, year, cost);
+                                this.cars.add(this.car);
+                                this.Electriccar = new ElectricCar(battery, motor);
+                                this.ElectricCars.add(this.Electriccar);
+                                try {
+                                    ObjectOutputStream oosCar = new ObjectOutputStream(new FileOutputStream("car.dat"));
+                                    oosCar.writeObject(cars);
+                                    oosCar.close();
+                                    ObjectOutputStream oosElectric = new ObjectOutputStream(new FileOutputStream("electric.dat"));
+                                    oosElectric.writeObject(ElectricCars);
+                                    oosElectric.close();
+                                    frameE.repaint();
+                                    frameE.revalidate();
+                                    frameE.dispose();
+
+                                    JOptionPane.showMessageDialog(null, "The car has been successfully added", "Added", JOptionPane.INFORMATION_MESSAGE);
+                                } catch (IOException ioe) {
+                                    JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }
+                            if (fuelType.equals("Combustion engine")) {
+                                emissions = Integer.parseInt(getEmissions().trim());
+                                engine = Double.parseDouble((getEngine().trim()));
+                                transmission = Objects.requireNonNull(cmbTransmission.getSelectedItem()).toString();
+                                fueltype = Objects.requireNonNull(cmbFuel.getSelectedItem()).toString();
+                                this.car = new Car(make, model, type, r, year, cost);
+                                this.cars.add(this.car);
+                                this.Fuelcar = new FuelCar(emissions, transmission, fueltype, engine);
+                                this.Fuelcars.add(this.Fuelcar);
+
+                                try {
+                                    ObjectOutputStream oosCar = new ObjectOutputStream(new FileOutputStream("car.dat"));
+                                    oosCar.writeObject(cars);
+                                    oosCar.close();
+                                    ObjectOutputStream oosFuelCar = new ObjectOutputStream(new FileOutputStream("fuel.dat"));
+                                    oosFuelCar.writeObject(Fuelcars);
+                                    oosFuelCar.close();
+                                    frameF.repaint();
+                                    frameF.revalidate();
+                                    frameF.dispose();
+
+
+                                    JOptionPane.showMessageDialog(null, "The car has been successfully added", "Added", JOptionPane.INFORMATION_MESSAGE);
+                                } catch (IOException ioe) {
+                                    JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
+                                }
+
+                            }
                         }
                     } else {
-                        JOptionPane.showMessageDialog(null, "Invalid registration. 11(1)-XX-1(1111) Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
+
+                        JOptionPane.showMessageDialog(null, "Invalid Year. Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
                     }
 
                 } else {
-                    JOptionPane.showMessageDialog(null, "Invalid Year. Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Invalid registration. 11(1)-XX-1(1111) Please re-enter", "Invalid", JOptionPane.ERROR_MESSAGE);
                 }
 
             } else {
@@ -763,23 +908,8 @@ public class CarSystem extends JFrame implements ActionListener {
             }
 
         } catch (NumberFormatException n) {
-            JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "An NumberFormatException Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
         }
-        this.car = new Car(make, model, type, r, years, costs);
-        this.cars.add(this.car);
-        if (valid) {
-            try {
-                ObjectOutputStream oosCar = new ObjectOutputStream(new FileOutputStream("car.dat"));
-                oosCar.writeObject(cars);
-                oosCar.flush();
-                frameF.dispose();
-                JOptionPane.showMessageDialog(null, "The car has been successfully added", "Added", JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException ioe) {
-                JOptionPane.showMessageDialog(null, "An Error has occurred", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        }
-
     }
 
     private boolean validateString(String arg) {
@@ -796,56 +926,198 @@ public class CarSystem extends JFrame implements ActionListener {
         return valid;
     }
 
+    /**
+     * Reset button.
+     */
     public void resetButton() {
         tfMakeG.setText("");
         tfModelG.setText("");
         tfRegNoG.setText("");
         tfCostG.setText("");
         tfYearG.setText("");
+        tfEngineG.setText("");
+        tfBatteryG.setText("");
+        tfEmissionsG.setText("");
+        tfMotorG.setText("");
+        tfFuelG.setText("");
     }
 
     /**
      * View cars.
      */
     public void viewCars() {
-
         try {
-            ObjectInputStream oisCar = new ObjectInputStream(new FileInputStream("car.dat"));
-            this.cars = (ArrayList) oisCar.readObject();
-            JFrame frameC = new JFrame("Car available");
+            String[] CarTypesList = {"Combustion Engines", "Electric"};
+            fuelType = (String) JOptionPane.showInputDialog(null, "Fuel Type",
+                    "Fuel Type", JOptionPane.QUESTION_MESSAGE, null, CarTypesList, CarTypesList[0]);
 
-            //frameC.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
 
-            frameC.setSize(200, 250);
-            frameC.setResizable(false);
-            JTextArea taCars = new JTextArea();
-            taCars.setSize(170, 220);
-            taCars.setLineWrap(true);
-            taCars.setEditable(false);
-            taCars.setVisible(true);
-            StringBuilder textCar = new StringBuilder();
-            if (this.cars.size() < 1) {
-                JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                for (Car car1 : this.cars) {
-                    textCar.append(car1.toString());
+            if (fuelType.equals("Combustion Engines")) {
+                try {
+                    ObjectInputStream oisCar = new ObjectInputStream(new FileInputStream("car.dat"));
+                    ObjectInputStream oisCarFuel = new ObjectInputStream(new FileInputStream("fuel.dat"));
+                    this.cars = (ArrayList) oisCar.readObject();
+                    this.Fuelcars = (ArrayList) oisCarFuel.readObject();
+                    JFrame frameC = new JFrame("Cars available");
+
+                    frameC.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+
+                    frameC.setSize(200, 250);
+                    frameC.setResizable(false);
+                    JTextArea taCars = new JTextArea();
+                    taCars.setSize(170, 220);
+                    taCars.setLineWrap(true);
+                    taCars.setEditable(false);
+                    taCars.setVisible(true);
+                    StringBuilder textCar = new StringBuilder();
+                    if (this.Fuelcars.size() < 1) {
+                        JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        for (Car car1 : this.cars) {
+                            textCar.append(car1);
+                        }
+                        for (FuelCar car2 : this.Fuelcars) {
+                            textCar.append(car2);
+                        }
+                        taCars.append(textCar.toString());
+                        JScrollPane scView = new JScrollPane(taCars);
+                        scView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                        scView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+                        frameC.setLocationRelativeTo(null);
+                        frameC.setResizable(false);
+                        frameC.add(scView);
+                        frameC.setVisible(true);
+                        cars.clear();
+
+                    }
+
+                } catch (IOException f) {
+                    JOptionPane.showMessageDialog(null, "An Error has occurred. Unable to load file", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
-                taCars.append(textCar.toString());
-                JScrollPane scView = new JScrollPane(taCars);
-                scView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-                scView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            }
+            if (fuelType.equals("Electric")) {
+                try {
+                    ObjectInputStream oisCar = new ObjectInputStream(new FileInputStream("car.dat"));
+                    ObjectInputStream oisCarElectric = new ObjectInputStream(new FileInputStream("electric.dat"));
+                    this.cars = (ArrayList) oisCar.readObject();
+                    this.ElectricCars = (ArrayList) oisCarElectric.readObject();
+                    JFrame frameC = new JFrame("Cars available");
 
-                frameC.setLocationRelativeTo(null);
-                frameC.setResizable(false);
-                frameC.add(scView);
-                frameC.setVisible(true);
+                    frameC.setIconImage(new ImageIcon(getClass().getResource("car.jpg")).getImage());
+
+                    frameC.setSize(200, 250);
+                    frameC.setResizable(false);
+                    JTextArea taCars = new JTextArea();
+                    taCars.setSize(170, 220);
+                    taCars.setLineWrap(true);
+                    taCars.setEditable(false);
+                    taCars.setVisible(true);
+                    StringBuilder textCar = new StringBuilder();
+                    if (this.ElectricCars.size() < 1) {
+                        JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        for (Car car1 : this.cars) {
+                            textCar.append(car1);
+
+                        }
+                        for (ElectricCar car3 : this.ElectricCars) {
+                            textCar.append(car3);
+
+                        }
+
+                        taCars.append(textCar.toString());
+                        JScrollPane scView = new JScrollPane(taCars);
+                        scView.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                        scView.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+                        frameC.setLocationRelativeTo(null);
+                        frameC.setResizable(false);
+                        frameC.add(scView);
+                        frameC.setVisible(true);
+                        cars.clear();
+                        ElectricCars.clear();
+
+                    }
+
+
+                } catch (IOException io) {
+                    JOptionPane.showMessageDialog(null, "An Error has occurred. Unable to load file", "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (NullPointerException n) {
+
+        }
+    }//end View Cars
+
+    /**
+     * Search.
+     */
+    public void search() {
+        String searchMake = tfMake.getText();
+        String searchModel = tfModel.getText();
+        int maxYear = Integer.parseInt(Objects.requireNonNull(cmbMaxYear.getSelectedItem()).toString());
+        String minPrice = tfMinPrice.getText();
+        double mnPrice = Double.parseDouble(minPrice);
+
+        if (searchMake.equals(make) || searchMake.equals("")) {
+            if (searchModel.equals(model) || searchModel.equals("")) {
+                if (maxYear <= year) {
+                    if (mnPrice <= cost) {
+                        // JTextArea taSearch = new JTextArea();
+                        // taSearch.append((Car) this.cars.toString());
+                        JOptionPane.showMessageDialog(null, "bethbeth", "Seheh", JOptionPane.PLAIN_MESSAGE);
+
+                    }
+
+                }
             }
 
-        } catch (IOException f) {
-            JOptionPane.showMessageDialog(null, "An Error has occurred. Unable to load file", "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } else {
+            JOptionPane.showMessageDialog(null, "No results", "No results", JOptionPane.PLAIN_MESSAGE);
         }
+
+    }
+
+    /**
+     * View details.
+     */
+    public void viewDetails() {
+
+        JTextArea jaCust = new JTextArea();
+        StringBuilder txtCust = new StringBuilder();
+        try {
+            if (this.customers.size() < 1) {
+                JOptionPane.showMessageDialog(null, "No Details added", "No results", JOptionPane.ERROR_MESSAGE);
+            } else {
+                for (Customer cust1 : this.customers) {
+                    txtCust.append(cust1);
+                    JOptionPane.showMessageDialog(null, txtCust, "Details", JOptionPane.PLAIN_MESSAGE);
+                }
+                jaCust.append(txtCust.toString());
+            }
+
+        } catch (NullPointerException n) {
+
+        }
+    }
+
+    /**
+     * Delete cust.
+     */
+    public void deleteCust() {
+        JComboBox cmbdetails = new JComboBox();
+        for (Customer c : this.customers) {
+            cmbdetails.addItem(c.getName());
+        }
+        JOptionPane.showMessageDialog(null, cmbdetails, "Remove Details", JOptionPane.WARNING_MESSAGE);
+        int details = cmbdetails.getSelectedIndex();
+        this.customers.remove(details);
+
     }
 
     /**
@@ -864,39 +1136,14 @@ public class CarSystem extends JFrame implements ActionListener {
             addCar();
         } else if (e.getSource() == btResetG) {
             resetButton();
+        } else if (e.getSource() == btSearch) {
+            search();
+        } else if (e.getSource() == btViewDetails) {
+            viewDetails();
+        } else if (e.getSource() == btDelete) {
+            deleteCust();
         }
     }// end actionPerformed
 
 } // end class CarSystem
 
-//From https://stackoverflow.com/questions/14673063/merging-file-in-java
-class IOCopier {
-    public static void joinFiles(File destination, File[] sources)
-            throws IOException {
-        OutputStream output = null;
-        try {
-            output = createAppendableStream(destination);
-            for (File source : sources) {
-                appendFile(output, source);
-            }
-        } finally {
-            IOUtils.closeQuietly(output);
-        }
-    }
-
-    private static BufferedOutputStream createAppendableStream(File destination)
-            throws FileNotFoundException {
-        return new BufferedOutputStream(new FileOutputStream(destination, true));
-    }
-
-    private static void appendFile(OutputStream output, File source)
-            throws IOException {
-        InputStream input = null;
-        try {
-            input = new BufferedInputStream(new FileInputStream(source));
-            IOUtils.copy(input, output);
-        } finally {
-            IOUtils.closeQuietly(input);
-        }
-    }
-}//end IOCopier

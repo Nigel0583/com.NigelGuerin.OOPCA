@@ -5,19 +5,25 @@ import java.io.Serializable;
  */
 public class ElectricCar extends Car implements Serializable {
     private int batterySize;
-    private String Motor;
+    private String motor;
 
 
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return "BatterySize: " + batterySize + "kW/h\n" +
-                "Motor: " + Motor ;
+                "Motor: " + motor +"\n" ;
     }
 
+    /**
+     * Instantiates a new Electric car.
+     *
+     * @param batterySize the battery size
+     * @param motor       the motor
+     */
     public ElectricCar(int batterySize, String motor) {
         this.batterySize = batterySize;
-        Motor = motor;
+        this.motor = motor;
 
     }
 
@@ -45,7 +51,7 @@ public class ElectricCar extends Car implements Serializable {
      * @return Value for property 'motor'.
      */
     public String getMotor() {
-        return Motor;
+        return motor;
     }
 
     /**
@@ -54,7 +60,7 @@ public class ElectricCar extends Car implements Serializable {
      * @param motor Value to set for property 'motor'.
      */
     public void setMotor(String motor) {
-        Motor = motor;
+      this.motor = motor;
     }
 
 

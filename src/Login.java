@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 /**
  * Created by Nigel Guerin
  */
@@ -29,8 +30,8 @@ public class Login extends JFrame implements ActionListener {
 
     /**
      * Instantiates a new Login.
-     *  @param url the url
-
+     *
+     * @param url the url
      */
     public Login(String url) {
         try {

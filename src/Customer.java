@@ -3,7 +3,6 @@ import java.io.Serializable;
 /**
  * Created by Nigel Guerin
  */
-
 public class Customer implements Serializable {
     private String name;
     private String DOB;
@@ -18,10 +17,20 @@ public class Customer implements Serializable {
                 "Email: " + email ;
     }
 
-    /** Constructs a new Customer. */
+    /**
+     * Constructs a new Customer.
+     */
     public Customer(){
         this("Unknown","Unknown","Unknown");
     }
+
+    /**
+     * Instantiates a new Customer.
+     *
+     * @param name  the name
+     * @param DOB   the dob
+     * @param email the email
+     */
     public Customer(String name, String DOB, String email) {
         this.name = name;
         this.DOB = DOB;

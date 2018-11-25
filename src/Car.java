@@ -45,7 +45,7 @@ public class Car implements Serializable {
                 "Type: " + type + '\n' +
                 "Year: " + year + '\n' +
                 "Registration: " + Regno + '\n' +
-                "Cost: €" + cost + "\n\n";
+                "Cost: €" + cost + "\n";
     }
 
     /**
