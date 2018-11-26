@@ -973,11 +973,16 @@ public class CarSystem extends JFrame implements ActionListener {
                     if (this.Fuelcars.size() < 1) {
                         JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
+                        int x=0;
                         for (Car car1 : this.cars) {
+                            int i;
                             textCar.append(car1);
-                        }
-                        for (FuelCar car2 : this.Fuelcars) {
-                            textCar.append(car2);
+
+                            for (i=x;i < Fuelcars.size(); i++) {
+                                textCar.append(Fuelcars.get(i).toString()+"\n");
+                                x++;
+                                break;
+                            }
                         }
                         taCars.append(textCar.toString());
                         JScrollPane scView = new JScrollPane(taCars);
@@ -1019,13 +1024,17 @@ public class CarSystem extends JFrame implements ActionListener {
                     if (this.ElectricCars.size() < 1) {
                         JOptionPane.showMessageDialog(null, "No cars added", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
+                        int x=0;
                         for (Car car1 : this.cars) {
+                            int i;
                             textCar.append(car1);
 
-                        }
-                        for (ElectricCar car3 : this.ElectricCars) {
-                            textCar.append(car3);
 
+                            for (i=x;i < ElectricCars.size(); i++) {
+                                textCar.append(ElectricCars.get(i).toString()+"\n");
+                                x++;
+                                break;
+                            }
                         }
 
                         taCars.append(textCar.toString());
